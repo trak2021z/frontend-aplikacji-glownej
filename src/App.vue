@@ -1,19 +1,17 @@
 <template>
   <div id="app">
-    <Navbar></Navbar>
-    <Register></Register>
+    <navbar></navbar>
+    <router-view></router-view>
   </div>
 </template>
 
 <script>
-import Register from "./components/Register";
 import Navbar from "./components/Navbar";
 
 export default {
   name: 'App',
   components: {
-    Navbar,
-    Register,
+    Navbar
   }
 }
 </script>
