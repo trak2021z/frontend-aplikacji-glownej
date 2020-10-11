@@ -17,7 +17,13 @@ const router = new Router({
             name: 'register',
             component: Register
         },
+        {
+            path: '*',
+            name: 'home',
+            component: Register
+        },
     ]
 })
 
 export default router
+

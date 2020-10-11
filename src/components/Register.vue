@@ -1,3 +1,4 @@
+<script src="../router.js"></script>
 <template>
   <div class="signup-form">
     <form @submit="submit">
@@ -10,8 +11,8 @@
                                   :class="{'is-invalid':$v.firstname.$error, 'is-valid':!$v.firstname.$invalid }">
             <div class="invalid-feedback">
               <span v-if="!$v.firstname.required">Firstname Required</span>
-              <span v-if="!$v.firstname.minLength">Malo Liter</span>
-              <span v-if="!$v.firstname.maxLength">Duzo Liter</span>
+              <span v-if="!$v.firstname.minLength">First name too short</span>
+              <span v-if="!$v.firstname.maxLength">First name too long</span>
             </div>
           </div>
           <div class="col">
@@ -19,9 +20,9 @@
                    v-model.trim="$v.lastname.$model"
                    :class="{'is-invalid':$v.lastname.$error, 'is-valid':!$v.lastname.$invalid }">
             <div class="invalid-feedback">
-              <span v-if="!$v.lastname.required">Firstname Required</span>
-              <span v-if="!$v.lastname.minLength">Malo Liter</span>
-              <span v-if="!$v.lastname.maxLength">Duzo Liter</span>
+              <span v-if="!$v.lastname.required">Last name Required</span>
+              <span v-if="!$v.lastname.minLength">Last name too short</span>
+              <span v-if="!$v.lastname.maxLength">Last name too long</span>
             </div>
           </div>
         </div>
@@ -75,7 +76,8 @@
       </div>
       <div class="form-group">
         <div class="row">
-          <div class="col"><input @click="clearFormFields" type="reset" class="btn btn-success btn-lg btn-block" value="Reset Form"></div>
+          <div class="col"><input @click="clearFormFields" type="reset" class="btn btn-success btn-lg btn-block"
+                                  value="Reset Form"></div>
           <div class="col">
             <button type="submit" class="btn btn-success btn-lg btn-block">Register Now</button>
           </div>
@@ -112,7 +114,7 @@ export default {
       }
       e.preventDefault();
     },
-    clearFormFields(){
+    clearFormFields() {
       this.firstname = '';
       this.lastname = '';
       this.email = '';
@@ -126,12 +128,12 @@ export default {
     firstname: {
       required,
       minLength: minLength(3),
-      maxLength: maxLength(10)
+      maxLength: maxLength(50)
     },
     lastname: {
       required,
       minLength: minLength(3),
-      maxLength: maxLength(10)
+      maxLength: maxLength(50)
     },
     email: {
       required,
