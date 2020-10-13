@@ -5,7 +5,8 @@ import router from './router';
 import jQuery from 'jquery';
 import 'bootstrap';
 import 'popper.js';
-import './assets/app.css';
+import './assets/css/app.css';
+import './fai';
 
 window.$ = window.jQuery = jQuery;
 
