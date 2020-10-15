@@ -130,15 +130,17 @@ export default {
         }).then(response => {
           this.status = response;
           this.registerStatus();
-          this.$v.$reset();
-          setTimeout(() => router.replace('/companies'), 3000);
+          if(this.status === 201){
+            this.$v.$reset();
+            setTimeout(() => router.replace('/companies'), 3000);
+          }
         });
       }
       e.preventDefault();
     },
     registerStatus() {
       if (this.status === 201)
-        this.registerMessage = "User registered successfuly, we'll  redirect you in a moment";
+        this.registerMessage = "User registered successfully, we'll redirect you in a moment";
       else
         this.registerMessage = 'User creation failed';
     },

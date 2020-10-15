@@ -15,9 +15,21 @@ const actions = {
                 return error.response.status
             });
     },
+    async login({commit}, user) {
+        return axios.post( 'rest-auth/login/', user)
+            .then(response => {
+                commit('setToken', response.data.token)
+                return response.status
+            })
+            .catch(error => {
+                return error.response.status
+            });
+    },
     clearToken ({ commit }) {
         commit('setToken', null)
     }
+
+
 }
 
 const getters = {

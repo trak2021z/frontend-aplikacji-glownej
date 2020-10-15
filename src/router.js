@@ -59,8 +59,8 @@ const router = new Router({
         },
         {
             path: '*',
-            name: 'home',
-            component: Register,
+            name: 'default',
+            component: Login,
             beforeEnter: ifNotAuthenticated
         },
     ]

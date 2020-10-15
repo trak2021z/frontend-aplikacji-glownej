@@ -4,6 +4,9 @@
       <h2>Log in</h2>
       <p class="hint-text">Please log in using e-mail and password</p>
       <div class="form-group">
+        <div v-if="(status && status !== 201) || (!status && loginMessage)" class="alert alert-danger">
+          {{loginMessage}}
+        </div>
         <div class="row">
           <div class="col"><input type="email" class="form-control" name="email" placeholder="Email"
                                   v-model.trim="$v.email.$model"
@@ -35,31 +38,55 @@
         </div>
       </div>
     </form>
-    <div class="text-center">Don't have an account? <a href="#">Register</a></div>
+    <div class="text-center">Don't have an account? <router-link to="/register">Register</router-link></div>
   </div>
 </template>
 
 <script>
 import {minLength, required, email} from "vuelidate/lib/validators";
+import {mapActions, mapGetters} from "vuex";
+import router from "@/router";
 
 export default {
   name: "Login",
   data() {
     return {
       email: '',
-      password: ''
+      password: '',
+      status: null,
+      loginMessage: null
     }
   },
+  computed: mapGetters(["getToken"]),
   methods: {
+    ...mapActions(["login"]),
     submit(e) {
       this.$v.$touch();
       if (this.$v.$invalid) {
-        console.log('form is invalid');
+        this.loginMessage = 'Fill all fields correctly to log in';
+        this.$v.$reset();
       } else {
-        console.log('form submitted');
+        this.login({
+          username: this.email,
+          password: this.password,
+          email: this.email
+        }).then(response => {
+          this.status = response;
+          this.loginStatus();
+          if(this.status === 200){
+            this.$v.$reset();
+            router.replace('/companies');
+          }
+        });
       }
       e.preventDefault();
     },
+    loginStatus(){
+      if(this.status === 200)
+        this.loginMessage = "Log in successful, we'll redirect you in a moment";
+      else
+        this.loginMessage = 'Log in failed - wrong email and/or password';
+    }
   },
   validations: {
     email: {
@@ -73,7 +100,3 @@ export default {
   }
 }
 </script>
-
-<style scoped>
-
-</style>
