@@ -63,6 +63,22 @@ export default {
           {
             "id": "8",
             "companyName": "nazwa",
+          },
+          {
+            "id": "9",
+            "companyName": "innaNazwa",
+          },
+          {
+            "id": "10",
+            "companyName": "nazwa",
+          },
+          {
+            "id": "11",
+            "companyName": "nazwa",
+          },
+          {
+            "id": "12",
+            "companyName": "innaNazwa",
           }
         ]
       }

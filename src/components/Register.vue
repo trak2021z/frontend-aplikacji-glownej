@@ -4,6 +4,12 @@
       <h2>Register</h2>
       <p class="hint-text">You can create new account using this form</p>
       <div class="form-group">
+        <div v-if="status === 201" class="alert alert-success">
+          {{registerMessage}}
+        </div>
+        <div v-if="(status && status !== 201) || (!status && registerMessage)" class="alert alert-danger">
+          {{registerMessage}}
+        </div>
         <div class="row">
           <div class="col"><input type="text" class="form-control" name="first_name" placeholder="First Name"
                                   v-model.trim="$v.firstname.$model"
@@ -78,17 +84,19 @@
           <div class="col"><input @click="clearFormFields" type="reset" class="btn btn-success btn-lg btn-block"
                                   value="Reset Form"></div>
           <div class="col">
-            <button type="submit" class="btn btn-success btn-lg btn-block">Register Now</button>
+            <input @click="submit" type="button" class="btn btn-success btn-lg btn-block" value="Register"/>
           </div>
         </div>
       </div>
     </form>
-    <div class="text-center">Already have an account? <a href="#">Sign in</a></div>
+    <div class="text-center">Already have an account? <router-link to="/login">Sign in</router-link></div>
   </div>
 </template>
 
 <script>
 import {maxLength, minLength, required, email, sameAs} from "vuelidate/lib/validators";
+import {mapActions, mapGetters} from "vuex";
+import router from '../router';
 
 export default {
   name: 'Register',
@@ -100,18 +108,39 @@ export default {
       address: '',
       password: '',
       passwordConfirmation: null,
-      creditCard: ''
+      creditCard: '',
+      status: null,
+      registerMessage: null
     }
   },
+  computed: mapGetters(["getToken"]),
   methods: {
+    ...mapActions(["register"]),
     submit(e) {
       this.$v.$touch();
       if (this.$v.$invalid) {
-        console.log('form is invalid');
+        this.registerMessage = 'Fill all fields correctly before registration';
+        this.$v.$reset();
       } else {
-        console.log('form submitted');
+        this.register({
+          username: this.email,
+          password1: this.password,
+          password2: this.passwordConfirmation,
+          email: this.email
+        }).then(response => {
+          this.status = response;
+          this.registerStatus();
+          this.$v.$reset();
+          setTimeout(() => router.replace('/companies'), 3000);
+        });
       }
       e.preventDefault();
+    },
+    registerStatus() {
+      if (this.status === 201)
+        this.registerMessage = "User registered successfuly, we'll  redirect you in a moment";
+      else
+        this.registerMessage = 'User creation failed';
     },
     clearFormFields() {
       this.firstname = '';
@@ -121,6 +150,7 @@ export default {
       this.password = '';
       this.passwordConfirmation = null;
       this.creditCard = '';
+      this.$v.$reset();
     }
   },
   validations: {

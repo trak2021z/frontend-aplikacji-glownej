@@ -49,8 +49,6 @@ export default {
         ]
       }
     }
-  }, created() {
-    console.log(this.companyStocks)
   }
 }
 </script>
