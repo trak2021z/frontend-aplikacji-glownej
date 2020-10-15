@@ -9,14 +9,20 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
           <ul class="navbar-nav">
-            <li :class="{'nav-item':this.currentPage !== 'home', 'nav-item active':this.currentPage === 'home' }">
+            <li v-if="!$store.getters.isAuthenticated" :class="{'nav-item':this.currentPage !== 'home', 'nav-item active':this.currentPage === 'home' }">
               <router-link class="nav-link" to="/">Home <span class="sr-only">(current)</span></router-link>
             </li>
-            <li :class="{'nav-item':this.currentPage !== 'companies', 'nav-item active':this.currentPage === 'companies' }">
+            <li v-if="!$store.getters.isAuthenticated" :class="{'nav-item':this.currentPage !== 'register', 'nav-item active':this.currentPage === 'register' }">
+              <router-link class="nav-link" to="/register">Register</router-link>
+            </li>
+            <li v-if="$store.getters.isAuthenticated" :class="{'nav-item':this.currentPage !== 'companies', 'nav-item active':this.currentPage === 'companies' }">
               <router-link class="nav-link" to="/companies">Companies</router-link>
             </li>
-            <li :class="{'nav-item':this.currentPage !== 'company', 'nav-item active':this.currentPage === 'company' }">
+            <li v-if="$store.getters.isAuthenticated" :class="{'nav-item':this.currentPage !== 'company', 'nav-item active':this.currentPage === 'company' }">
               <router-link class="nav-link" to="/company">Company</router-link>
+            </li>
+            <li v-if="$store.getters.isAuthenticated" @click="logout" :class="{'nav-item':this.currentPage !== 'company', 'nav-item active':this.currentPage === 'company' }">
+              <router-link class="nav-link" to="">Logout</router-link>
             </li>
           </ul>
           <ul class="navbar-nav ml-auto">
@@ -35,12 +41,22 @@
 
 <script>
 import router from '../router';
+import store from '../stores/store';
+import { mapActions } from "vuex";
 
 export default {
+  ...mapActions(["clearToken"]),
   name: 'navbar',
   data() {
     return {
       currentPage: router.currentRoute.name
+    }
+  },
+  methods: {
+    logout() {
+      store.dispatch('clearToken');
+      localStorage.removeItem('token');
+      router.replace('/')
     }
   },
   watch: {

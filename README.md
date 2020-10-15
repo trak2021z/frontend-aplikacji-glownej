@@ -3,6 +3,8 @@
 ## Project setup
 ```
 npm install
+copy .env.example to root folder with name .env
+set variables following .env.exaple
 ```
 
 ### Compiles and hot-reloads for development
