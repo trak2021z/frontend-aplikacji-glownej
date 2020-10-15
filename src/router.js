@@ -30,17 +30,14 @@ const router = new Router({
         {
             path: '/',
             name: 'home',
-<<<<<<< HEAD
-            component: Login
+            component: Login,
+            beforeEnter: ifNotAuthenticated
         },
         {
             path: '/login',
             name: 'login',
-            component: Login
-=======
-            component: Register,
+            component: Login,
             beforeEnter: ifNotAuthenticated
->>>>>>> 4fb137b92ce5d2aeb25b72cd9787740e3884c742
         },
         {
             path: '/register',
