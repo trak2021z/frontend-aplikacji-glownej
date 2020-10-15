@@ -15,7 +15,7 @@
           <th scope="row">{{ index + 1 }}</th>
           <td>{{ item.companyName }}</td>
           <td>
-            <router-link to="/">
+            <router-link to="/company">
               <font-awesome-icon icon="search-plus"/>
             </router-link>
           </td>

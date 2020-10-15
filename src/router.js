@@ -3,8 +3,25 @@ import Router from "vue-router";
 import Register from "@/components/Register";
 import CompaniesList from "@/components/CompaniesList";
 import Company from "@/components/Company";
+import store from './stores/store';
 
 Vue.use(Router);
+
+const ifNotAuthenticated = (to, from, next) => {
+    if (!store.getters.isAuthenticated) {
+        next()
+        return
+    }
+    next('/companies')
+}
+
+const ifAuthenticated = (to, from, next) => {
+    if (store.getters.isAuthenticated) {
+        next()
+        return
+    }
+    next('/login')
+}
 
 const router = new Router({
     mode: 'history',
@@ -12,27 +29,32 @@ const router = new Router({
         {
             path: '/',
             name: 'home',
-            component: Register
+            component: Register,
+            beforeEnter: ifNotAuthenticated
         },
         {
             path: '/register',
             name: 'register',
-            component: Register
+            component: Register,
+            beforeEnter: ifNotAuthenticated
         },
         {
             path: '/companies',
             name: 'companies',
-            component: CompaniesList
+            component: CompaniesList,
+            beforeEnter: ifAuthenticated
         },
         {
             path: '/company',
             name: 'company',
-            component: Company
+            component: Company,
+            beforeEnter: ifAuthenticated
         },
         {
             path: '*',
             name: 'home',
-            component: Register
+            component: Register,
+            beforeEnter: ifNotAuthenticated
         },
     ]
 })

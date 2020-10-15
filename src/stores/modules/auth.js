@@ -1,12 +1,11 @@
 import axios from 'axios';
 
 const state = {
-    token: ''
+    token: localStorage.getItem('token') || ''
 }
 
 const actions = {
     async register({commit}, user) {
-        console.log(process.env.VUE_APP_BACKEND_URI);
         return axios.post( 'rest-auth/registration/', user)
             .then(response => {
                 commit('setToken', response.data.token)
@@ -15,6 +14,9 @@ const actions = {
             .catch(error => {
                 return error.response.status
             });
+    },
+    clearToken ({ commit }) {
+        commit('setToken', null)
     }
 }
 
@@ -22,10 +24,14 @@ const getters = {
     getToken: state => {
         return state.token
     },
+    isAuthenticated: state => !!state.token,
 }
 
 const mutations = {
-    setToken: (state, token) => (state.token = token)
+    setToken: (state, token) => {
+        state.token = token;
+        localStorage.token = token;
+    }
 }
 export default {
     state,
