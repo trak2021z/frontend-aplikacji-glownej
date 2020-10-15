@@ -12,14 +12,19 @@
             <li :class="{'nav-item':this.currentPage !== 'home', 'nav-item active':this.currentPage === 'home' }">
               <router-link class="nav-link" to="/">Home <span class="sr-only">(current)</span></router-link>
             </li>
-            <li :class="{'nav-item':this.currentPage !== 'register', 'nav-item active':this.currentPage === 'register' }">
-              <router-link class="nav-link" to="/register">Register</router-link>
-            </li>
             <li :class="{'nav-item':this.currentPage !== 'companies', 'nav-item active':this.currentPage === 'companies' }">
               <router-link class="nav-link" to="/companies">Companies</router-link>
             </li>
             <li :class="{'nav-item':this.currentPage !== 'company', 'nav-item active':this.currentPage === 'company' }">
               <router-link class="nav-link" to="/company">Company</router-link>
+            </li>
+          </ul>
+          <ul class="navbar-nav ml-auto">
+            <li :class="{'nav-item':this.currentPage !== 'login', 'nav-item active':this.currentPage === 'login' }">
+              <router-link class="nav-link" to="/login">Log in</router-link>
+            </li>
+            <li class="nav-item">
+              <router-link class="btn btn-success" to="/register">Register</router-link>
             </li>
           </ul>
         </div>

@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import Router from "vue-router";
+import Login from "@/components/Login";
 import Register from "@/components/Register";
 import CompaniesList from "@/components/CompaniesList";
 import Company from "@/components/Company";
@@ -12,7 +13,12 @@ const router = new Router({
         {
             path: '/',
             name: 'home',
-            component: Register
+            component: Login
+        },
+        {
+            path: '/login',
+            name: 'login',
+            component: Login
         },
         {
             path: '/register',
