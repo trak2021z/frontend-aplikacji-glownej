@@ -4,6 +4,7 @@ import Login from "@/components/Login";
 import Register from "@/components/Register";
 import CompaniesList from "@/components/CompaniesList";
 import Company from "@/components/Company";
+import Stocks from "@/components/Stocks";
 import store from './stores/store';
 
 Vue.use(Router);
@@ -13,7 +14,7 @@ const ifNotAuthenticated = (to, from, next) => {
         next()
         return
     }
-    next('/companies')
+    next('/stocks')
 }
 
 const ifAuthenticated = (to, from, next) => {
@@ -44,6 +45,12 @@ const router = new Router({
             name: 'register',
             component: Register,
             beforeEnter: ifNotAuthenticated
+        },
+        {
+            path: '/stocks',
+            name: 'stocks',
+            component: Stocks,
+            beforeEnter: ifAuthenticated
         },
         {
             path: '/companies',
