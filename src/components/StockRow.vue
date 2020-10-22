@@ -2,9 +2,9 @@
   <tr>
     <th scope="row">{{ index + 1 }}</th>
     <td>{{ stock.name }}</td>
-    <td>{{stock.company.name}}</td>
-    <td>{{stock.avail_amount}}</td>
-    <td>{{stock.price}}</td>
+    <td>{{ stock.company.name }}</td>
+    <td>{{ stock_amount ? stock_amount : stock.avail_amount }}</td>
+    <td>{{ stock.price }}</td>
     <td>
       <button class="btn-success">Buy</button>
       <button class="btn-danger">Sell</button>
@@ -19,7 +19,7 @@ export default {
     return {
     }
   },
-  props: ["index", "stock"]
+  props: ["index", "stock", "stock_amount"]
 }
 </script>
 

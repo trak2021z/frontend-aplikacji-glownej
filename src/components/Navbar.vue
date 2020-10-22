@@ -10,6 +10,9 @@
         <div class="collapse navbar-collapse" id="navbarNav">
           <ul class="navbar-nav">
             <template v-if="$store.getters.isAuthenticated">
+              <li :class="{'nav-item':this.currentPage !== 'stocks', 'nav-item active':this.currentPage === 'stocks' }">
+                <router-link class="nav-link" to="/stocks">Stocks</router-link>
+              </li>
               <li :class="{'nav-item':this.currentPage !== 'companies', 'nav-item active':this.currentPage === 'companies' }">
                 <router-link class="nav-link" to="/companies">Companies</router-link>
               </li>
