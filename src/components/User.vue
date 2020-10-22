@@ -60,7 +60,7 @@
               </div>
 
               <div class="md-form mb-4">
-                <input type="text" id="sellModalPrice" class="form-control validate" disabled>
+                <input type="number" min="1" step="1" id="sellModalPrice" class="form-control validate" disabled>
                 <label data-error="wrong" data-success="right" for="sellModalPrice">Current Price</label>
               </div>
 
@@ -96,12 +96,12 @@
             </router-link>
           </td>
           <td>
-            <a href="" @click="changeSelectedStock(item.company_id, item.price)" data-toggle="modal" data-target="#modalBuyStock">
+            <a href="" @click="changeSelectedStock(item.stock.pk, item.stock.price)" data-toggle="modal" data-target="#modalBuyStock">
               <font-awesome-icon icon="money-check"/>
             </a>
           </td>
           <td>
-            <a href="" @click="changeSelectedStock(item.company_id, item.price)" data-toggle="modal" data-target="#modalSellStock">
+            <a href="" @click="changeSelectedStock(item.stock.pk, item.stock.price)" data-toggle="modal" data-target="#modalSellStock">
               <font-awesome-icon icon="coins"/>
             </a>
           </td>
@@ -162,18 +162,16 @@ export default {
       jQuery('#sellModalPrice').attr('value', price);
     },
     buyStocks() {
-      console.log('kupowanie');
+      //this.buyStocks(this.selectedStockId, Math.floor(jQuery('#buyModalAmount').val()));
     },
     sellStocks() {
-      console.log('sprzedawanie');
+      //this.sellStocks(this.selectedStockId, Math.floor(jQuery('#sellModalAmount').val()));
     }
   },
   computed: mapGetters(["getUser"]),
   async created() {
     this.user = await this.getUserAction();
     this.userStocks = await this.getUserStockAction();
-    console.log(this.user);
-    console.log(this.userStocks);
   }
 }
 </script>
