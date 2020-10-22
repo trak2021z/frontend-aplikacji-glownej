@@ -76,36 +76,22 @@
         <thead>
         <tr>
           <th scope="col">#</th>
-          <th scope="col">Stock Name</th>
-          <th scope="col">Stock Price</th>
-          <th scope="col">Stock Amount</th>
-          <th scope="col">Show Company</th>
-          <th scope="col">Buy More</th>
-          <th scope="col">Sell</th>
+          <th scope="col">Stock</th>
+          <th scope="col">Company</th>
+          <th scope="col">Amount</th>
+          <th scope="col">Price</th>
+          <th scope="col">Buy/Sell</th>
         </tr>
         </thead>
         <tbody>
-        <tr v-for="(item, index) in userStocks" :key="item.id">
-          <th scope="row">{{ index + 1 }}</th>
-          <td>{{ item.stock.name }}</td>
-          <td>{{ item.stock.price }}</td>
-          <td>{{ item.stock_amount }}</td>
-          <td>
-            <router-link v-bind="item" :to="`/company/${item.stock.company.pk}`">
-              <font-awesome-icon icon="search-plus"/>
-            </router-link>
-          </td>
-          <td>
-            <a href="" @click="changeSelectedStock(item.stock.pk, item.stock.price)" data-toggle="modal" data-target="#modalBuyStock">
-              <font-awesome-icon icon="money-check"/>
-            </a>
-          </td>
-          <td>
-            <a href="" @click="changeSelectedStock(item.stock.pk, item.stock.price)" data-toggle="modal" data-target="#modalSellStock">
-              <font-awesome-icon icon="coins"/>
-            </a>
-          </td>
-        </tr>
+        <StockRow
+            v-for="(userStock, index) in userStocks" :key="userStock.pk"
+            v-bind:index="index"
+            v-bind:stock="userStock.stock"
+            v-bind:stock_amount="userStock.stock_amount"
+            v-on:buy-stock-clicked="showBuyModal"
+            v-on:sell-stock-clicked="showSellModal"
+        />
         </tbody>
       </table>
     </div>
@@ -113,10 +99,14 @@
 </template>
 
 <script>
+
 import jQuery from 'jquery';
 import {mapGetters, mapActions} from "vuex";
+import StockRow from "@/components/StockRow";
+
 window.$ = window.jQuery = jQuery;
 export default {
+  components: {StockRow},
   data() {
     return {
       selectedStockId: null,
@@ -127,39 +117,37 @@ export default {
         },
         username: null
       },
-      userStocks: null,
-      stocks: {
-        all: [
-          {
-            company_id: 1,
-            name: "firma fajna",
-            price: 200.10,
-            aval_amount: 50
+      userStocks: [
+        {
+          pk: null,
+          stock: {
+            pk: null,
+            company: {
+              pk: null,
+              name: null
+            },
+            name: null,
+            price: null,
+            avail_amount: null
           },
-          {
-            company_id: 2,
-            name: "srednia firma",
-            price: 100.11,
-            aval_amount: 30
-          },
-          {
-            company_id: 3,
-            name: "słabiaki",
-            price: 11.99,
-            aval_amount: 50
-          }
-        ]
-      }
+          stock_amount: null
+        }
+      ]
     }
   },
   methods: {
     ...mapActions(["getUserAction", "getUserStockAction"]),
-    changeSelectedStock(id, price) {
+    showBuyModal(id, price){
       this.selectedStockId = id;
       jQuery('#buyModalId').attr('value', id);
       jQuery('#buyModalPrice').attr('value', price);
+      jQuery('#modalBuyStock').modal()
+    },
+    showSellModal(id, price){
+      this.selectedStockId = id;
       jQuery('#sellModalId').attr('value', id);
       jQuery('#sellModalPrice').attr('value', price);
+      jQuery('#modalSellStock').modal()
     },
     buyStocks() {
       //this.buyStocks(this.selectedStockId, Math.floor(jQuery('#buyModalAmount').val()));

@@ -6,8 +6,8 @@
     <td>{{ stock_amount ? stock_amount : stock.avail_amount }}</td>
     <td>{{ stock.price }}</td>
     <td>
-      <button class="btn-success">Buy</button>
-      <button class="btn-danger">Sell</button>
+      <button v-on:click="$emit('buy-stock-clicked', stock.pk, stock.price)" class="btn-success">Buy</button>
+      <button v-on:click="$emit('sell-stock-clicked', stock.pk, stock.price)" class="btn-danger">Sell</button>
     </td>
   </tr>
 </template>
