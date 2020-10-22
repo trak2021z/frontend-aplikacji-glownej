@@ -12,10 +12,12 @@
               </select>
             </div>
             <div class="col">
-                <select name="sel_stocks" reactive="true" v-model="selectedStock" v-if="selectedOfferType == 1" class="browser-default custom-select" placeholder="Select Stock">
+                <select name="sel_stocks" reactive="true" v-model="selectedStock" v-if="selectedOfferType == 1" class="browser-default custom-select">
+                <option selected disabled value>Please choose stock</option>
                 <option v-for="item in stocks" :key="item.id"> {{item.name}} </option>
               </select>
-              <select name="sel_stocks" reactive="true" v-model="selectedStock" v-if="selectedOfferType == 2" class="browser-default custom-select" placeholder="Select Stock">
+              <select name="sel_stocks" reactive="true" v-model="selectedStock" v-if="selectedOfferType == 2" class="browser-default custom-select">
+                <option selected disabled value>Please choose stock</option>
                 <option v-for="item in userStocks" :key="item.id"> {{item.stock.name}} </option>
               </select>
             </div>
@@ -106,6 +108,13 @@ export default {
             "stock": "Dummy Stock",
             "unit_price": 45.00,
             "stock_amount": 5
+          },
+          {
+            "type":"buy", 
+            "status":"closed",
+            "stock": "Dummy Stock",
+            "unit_price": 15.00,
+            "stock_amount": 10
           }
         ]
       }
@@ -115,11 +124,6 @@ export default {
     ...mapActions(["getUserAction", "getUserStockAction", "getStocksAction"]),
     onChange(){
         console.log('Offer type selected: ', this.selectedOfferType);
-        if (this.selectedOfferType == 1) {
-            console.log('Zupa dyniowa #1');
-        } else {
-            console.log('Zupa dyniowa #2');
-        }
     },
     submit() {
         if (this.selectedOfferType == 1) {
@@ -135,6 +139,9 @@ async created() {
     this.userStocks = await this.getUserStockAction();
     this.stocks = await this.getStocksAction();
     console.log('stocks', this.stocks)
-  }
+  },
+validations: {
+    
+}
 }
 </script>
