@@ -5,7 +5,9 @@ import Register from "@/components/Register";
 import CompaniesList from "@/components/CompaniesList";
 import Company from "@/components/Company";
 import Stocks from "@/components/Stocks";
+import User from "@/components/User";
 import store from './stores/store';
+import TradeHistory from "@/components/TradeHistory";
 
 Vue.use(Router);
 
@@ -62,6 +64,18 @@ const router = new Router({
             path: '/company',
             name: 'company',
             component: Company,
+            beforeEnter: ifAuthenticated
+        },
+        {
+            path: '/user',
+            name: 'user',
+            component: User,
+            beforeEnter: ifAuthenticated
+        },
+        {
+            path: '/trades/history',
+            name: 'tradesHistory',
+            component: TradeHistory,
             beforeEnter: ifAuthenticated
         },
         {
