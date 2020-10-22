@@ -4,73 +4,8 @@
       <h2>Hello, {{user.username}}</h2>
       <p>Your balance: {{user.profile.balance}}</p>
 
-      <div class="modal fade" id="modalBuyStock" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-           aria-hidden="true">
-        <div class="modal-dialog" role="document">
-          <div class="modal-content">
-            <div class="modal-header text-center">
-              <h4 class="modal-title w-100 font-weight-bold">Buy Stocks</h4>
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-              </button>
-            </div>
-            <div class="modal-body mx-3">
-              <div class="md-form mb-5">
-                <input type="text" id="buyModalId" class="form-control validate" disabled>
-                <label data-error="wrong" data-success="right" for="buyModalId">Stock Id</label>
-              </div>
-
-              <div class="md-form mb-4">
-                <input type="text" id="buyModalAmount" class="form-control validate">
-                <label data-error="wrong" data-success="right" for="buyModalAmount">Stock Amount</label>
-              </div>
-
-              <div class="md-form mb-4">
-                <input type="text" id="buyModalPrice" class="form-control validate" disabled>
-                <label data-error="wrong" data-success="right" for="buyModalPrice">Current Price</label>
-              </div>
-
-            </div>
-            <div class="modal-footer d-flex justify-content-center">
-              <button @click="buyStocks()" class="btn btn-success">Buy</button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="modal fade" id="modalSellStock" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-           aria-hidden="true">
-        <div class="modal-dialog" role="document">
-          <div class="modal-content">
-            <div class="modal-header text-center">
-              <h4 class="modal-title w-100 font-weight-bold">Sell Stocks</h4>
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-              </button>
-            </div>
-            <div class="modal-body mx-3">
-              <div class="md-form mb-5">
-                <input type="text" id="sellModalId" class="form-control validate" disabled>
-                <label data-error="wrong" data-success="right" for="sellModalId">Stock Id</label>
-              </div>
-
-              <div class="md-form mb-4">
-                <input type="text" id="sellModalAmount" class="form-control validate">
-                <label data-error="wrong" data-success="right" for="sellModalAmount">Stock Amount</label>
-              </div>
-
-              <div class="md-form mb-4">
-                <input type="number" min="1" step="1" id="sellModalPrice" class="form-control validate" disabled>
-                <label data-error="wrong" data-success="right" for="sellModalPrice">Current Price</label>
-              </div>
-
-            </div>
-            <div class="modal-footer d-flex justify-content-center">
-              <button @click="sellStocks()" class="btn btn-success">Sell</button>
-            </div>
-          </div>
-        </div>
-      </div>
+      <BuyModal :is_visible="isBuyModalVisible" :stock_id="selectedStockId" :stock_price="selectedStockPrice" v-on:hide="closeModals"/>
+      <SellModal :is_visible="isSellModalVisible" :stock_id="selectedStockId" :stock_price="selectedStockPrice" v-on:hide="closeModals"/>
 
       <table class="table table-hover">
         <thead>
@@ -94,22 +29,25 @@
         />
         </tbody>
       </table>
+
     </div>
   </div>
 </template>
 
 <script>
-
-import jQuery from 'jquery';
 import {mapGetters, mapActions} from "vuex";
 import StockRow from "@/components/StockRow";
+import BuyModal from "@/components/BuyModal";
+import SellModal from "@/components/SellModal";
 
-window.$ = window.jQuery = jQuery;
 export default {
-  components: {StockRow},
+  components: {SellModal, BuyModal, StockRow},
   data() {
     return {
       selectedStockId: null,
+      selectedStockPrice: null,
+      isBuyModalVisible: false,
+      isSellModalVisible: false,
       email: localStorage.getItem('email'),
       user: {
         profile: {
@@ -139,22 +77,18 @@ export default {
     ...mapActions(["getUserAction", "getUserStockAction"]),
     showBuyModal(id, price){
       this.selectedStockId = id;
-      jQuery('#buyModalId').attr('value', id);
-      jQuery('#buyModalPrice').attr('value', price);
-      jQuery('#modalBuyStock').modal()
+      this.selectedStockPrice = price;
+      this.isBuyModalVisible = true;
     },
     showSellModal(id, price){
       this.selectedStockId = id;
-      jQuery('#sellModalId').attr('value', id);
-      jQuery('#sellModalPrice').attr('value', price);
-      jQuery('#modalSellStock').modal()
+      this.selectedStockPrice = price;
+      this.isSellModalVisible = true;
     },
-    buyStocks() {
-      //this.buyStocks(this.selectedStockId, Math.floor(jQuery('#buyModalAmount').val()));
+    closeModals(){
+      this.isBuyModalVisible = false;
+      this.isSellModalVisible = false;
     },
-    sellStocks() {
-      //this.sellStocks(this.selectedStockId, Math.floor(jQuery('#sellModalAmount').val()));
-    }
   },
   computed: mapGetters(["getUser"]),
   async created() {
