@@ -10,6 +10,7 @@ import './fai';
 import './assets/css/app.css';
 import './fai';
 import axios from 'axios';
+import VueAxios from 'vue-axios'
 import store from './stores/store';
 
 window.$ = window.jQuery = jQuery;
@@ -18,6 +19,7 @@ Vue.config.productionTip = false;
 
 axios.defaults.baseURL = process.env.VUE_APP_BACKEND_URI;
 
+Vue.use(VueAxios, axios);
 Vue.use(Vuelidate);
 
 new Vue({

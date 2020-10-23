@@ -11,7 +11,7 @@ const actions = {
 
         commit('setStocks', response.data);
         return response.data;
-    }
+    },
 }
 
 const getters = {

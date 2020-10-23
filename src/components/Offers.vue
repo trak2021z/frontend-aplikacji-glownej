@@ -12,23 +12,23 @@
               </select>
             </div>
             <div class="col">
-                <select name="sel_stocks" reactive="true" v-model="selectedStock" v-if="selectedOfferType == 1" class="browser-default custom-select">
+                <select name="sel_stocks" reactive="true" v-model="selectedStock" @change="onChangeStock" v-if="selectedOfferType == 1" class="browser-default custom-select">
                 <option selected disabled value>Please choose stock</option>
-                <option v-for="item in stocks" :key="item.id"> {{item.name}} </option>
+                <option v-for="(item, index) in stocks" v-bind:value="index" :key="item.id"> {{item.name}} - {{item.price}} </option>
               </select>
-              <select name="sel_stocks" reactive="true" v-model="selectedStock" v-if="selectedOfferType == 2" class="browser-default custom-select">
+              <select name="sel_stocks" reactive="true" v-model="selectedStock" @change="onChangeStock" v-if="selectedOfferType == 2" class="browser-default custom-select">
                 <option selected disabled value>Please choose stock</option>
-                <option v-for="item in userStocks" :key="item.id"> {{item.stock.name}} </option>
+                <option v-for="item in userStocks" :key="item.id"> {{item.stock.name}}</option>
               </select>
             </div>
           </div><br>
           <div class="row">
             <label for="edt_unit_price">Stock Price (per unit)</label>
-            <input type="number" min="0.01" step="0.01" value="0.01" class="form-control" name="edt_unit_price" placeholder="0.01">
+            <input type="number" name="edt_unit_price" v-model="edt_unit_price" @change="onChange" min="0.01" step="0.01" value="0.01" class="form-control" placeholder="0.01">
           </div><br>
           <div class="row">
             <label for="edt_amount">Stock Amount</label>
-            <input type="number" min="1" value="1" class="form-control" name="edt_amount" placeholder="1">
+            <input type="number" name="edt_amount" v-model="edt_amount" @change="onChange" min="1" value="1" class="form-control" placeholder="1">
           </div><br>
           <div class="row">
             <input @click="submit" type="button" class="btn btn-success btn-lg btn-block" value="Create Offer"/>
@@ -39,7 +39,7 @@
       <table class="table table-hover">
         <thead>
         <tr>
-          <th scope="col">#</th>
+          <th scope="col">Date</th>
           <th scope="col">Offer Type</th>
           <th scope="col">Status</th>
           <th scope="col">Stock Name</th>
@@ -48,8 +48,8 @@
         </tr>
         </thead>
         <tbody>
-        <tr v-for="(item, index) in BuyOffers.items" :key="item.id">
-          <th scope="row">{{ index + 1 }}</th>
+        <tr v-for="item in BuyOffers.items" :key="item.id">
+          <td>{{ item.date }}</td>
           <td>{{ item.type }}</td>
           <td>{{ item.status }}</td>
           <td>{{ item.stock }}</td>
@@ -69,28 +69,23 @@ export default {
     data() {
     return {
       selectedOfferType : 1,
+      selectedStock: 1,
       userStocks: null,
+      edt_unit_price: 0.01,
+      edt_amount: 1,
       stocks: null,
-      buyOfferRequest: {
-        stock: 0,
-        unit_price: 0,
-        stock_amount: 0
-      },
-      sellOfferRequest: {
-        user_stock: 0,
-        unit_price: 0,
-        stock_amount: 0
-      },
       BuyOffers: {
         items: [
           {
-            "type":"buy",  
+            "date": "2020-10-23 10:30:52",
+            "type":"buy",
             "status":"open",
             "stock": "Dummy Stock",
             "unit_price": 100.00,
             "stock_amount": 10
           },
           {
+            "date": "2020-10-22 10:30:52",
             "type":"buy",  
             "status":"open",
             "stock": "Dummy Stock",
@@ -98,6 +93,7 @@ export default {
             "stock_amount": 10
           },
           {
+            "date": "2020-10-21 10:30:52",
             "type":"sell",
             "status":"open",
             "stock": "Dummy Stock",
@@ -105,6 +101,7 @@ export default {
             "stock_amount": 20
           },
           {
+            "date": "2020-10-21 10:30:52",
             "type":"buy",   
             "status":"expired",
             "stock": "Dummy Stock",
@@ -112,6 +109,7 @@ export default {
             "stock_amount": 120
           },
           {
+            "date": "2020-10-20 10:30:52",
             "type":"buy", 
             "status":"closed",
             "stock": "Dummy Stock",
@@ -119,6 +117,7 @@ export default {
             "stock_amount": 5
           },
           {
+            "date": "2020-10-20 13:30:02",
             "type":"buy", 
             "status":"closed",
             "stock": "Dummy Stock",
@@ -126,6 +125,7 @@ export default {
             "stock_amount": 10
           },
           {
+            "date": "2020-10-20 11:30:52",
             "type":"buy", 
             "status":"buy",
             "stock": "Dummy Stock",
@@ -133,6 +133,7 @@ export default {
             "stock_amount": 30
           },
           {
+            "date": "2020-10-20 12:30:52",
             "type":"buy", 
             "status":"buy",
             "stock": "Dummy Stock",
@@ -148,11 +149,52 @@ export default {
     onChange(){
         console.log('Offer type selected: ', this.selectedOfferType);
     },
-    submit() {
+    onChangeStock(){
+        console.log('Stock selected: ', this.selectedStock);
+    },
+    submit(e) {
         if (this.selectedOfferType == 1) {
             console.log('Buy Offer');
+            e.preventDefault();
+            let currentObj = this;
+            console.log('unit_price - ' + this.edt_unit_price);
+            this.axios({ method: 'post', url: 'buyoffer', 
+            data: {
+              user : this.user,
+              stock: this.stocks[this.selectedStock],
+              unit_price : this.edt_unit_price,
+              status: 1,
+              stock_amount: this.edt_amount,
+              created: new Date()
+            },
+            headers: { Authorization: 'Bearer ' + localStorage.token } })
+            .then(function (response) {
+                currentObj.output = response.data;
+            })
+            .catch(function (error) {
+              currentObj.output = error;
+            });
+            
         } else {
             console.log('Sell Offer');
+            e.preventDefault();
+            let currentObj = this;
+            console.log('unit_price - ' + this.edt_unit_price);
+            this.axios({ method: 'post', url: 'selloffer', 
+            data: {
+              user_stock: this.userStocks[this.selectedStock],
+              unit_price : this.edt_unit_price,
+              status: 1,
+              stock_amount: this.edt_amount,
+              created: new Date()
+            },
+            headers: { Authorization: 'Bearer ' + localStorage.token } })
+            .then(function (response) {
+                currentObj.output = response.data;
+            })
+            .catch(function (error) {
+              currentObj.output = error;
+            });
         }
     }
   },
