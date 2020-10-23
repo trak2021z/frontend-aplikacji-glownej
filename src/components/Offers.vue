@@ -168,6 +168,8 @@ export default {
             .then(function (response) {
                 currentObj.output = response.data;
                 console.log('Buy Offer added sucessfully');
+                confirm('Buy Offer added successfully');
+              
             })
             .catch(function (error) {
               currentObj.output = error;
@@ -188,6 +190,7 @@ export default {
             .then(function (response) {
                 currentObj.output = response.data;
                 console.log('Sell Offer added sucessfully');
+                confirm('Sell Offer added successfully');
             })
             .catch(function (error) {
               currentObj.output = error;
