@@ -3,8 +3,8 @@
     <div class="main-table">
       <h2>Stocks</h2>
 
-      <BuyModal :is_visible="isBuyModalVisible" :stock_id="selectedStockId" :stock_price="selectedStockPrice" @hide="closeModals"/>
-      <SellModal :is_visible="isSellModalVisible" :stock_id="selectedStockId" :stock_price="selectedStockPrice" @hide="closeModals"/>
+      <buy-modal :is_visible="isBuyModalVisible" :stock_id="selectedStockId" :stock_price="selectedStockPrice" @hide="closeModals"/>
+      <sell-modal :is_visible="isSellModalVisible" :stock_id="selectedStockId" :stock_price="selectedStockPrice" @hide="closeModals"/>
 
       <table class="table table-hover">
         <thead>
@@ -18,8 +18,8 @@
         </tr>
         </thead>
         <tbody>
-          <StockRow
-              v-for="(stock, index) in stocks" :key="stock.id"
+          <stock-row
+              v-for="(stock, index) in pageOfStocks" :key="stock.pk"
               v-bind:index="index"
               v-bind:stock="stock"
               @buy-stock-clicked="showBuyModal"
@@ -27,6 +27,8 @@
           />
         </tbody>
       </table>
+      <hr>
+      <jw-pagination v-if="stocks" :items="stocks" @changePage="onChangePage" />
     </div>
   </div>
 </template>
@@ -46,7 +48,8 @@ name: "Stocks",
       selectedStockPrice: null,
       isBuyModalVisible: false,
       isSellModalVisible: false,
-      stocks: null
+      stocks: null,
+      pageOfStocks: null,
     }
   },
   methods: {
@@ -65,6 +68,9 @@ name: "Stocks",
       this.isBuyModalVisible = false;
       this.isSellModalVisible = false;
     },
+    onChangePage(pageOfItems){
+      this.pageOfStocks = pageOfItems;
+    }
   },
   async created() {
     this.stocks = await this.getStocksAction();

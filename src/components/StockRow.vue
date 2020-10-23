@@ -1,8 +1,10 @@
 <template>
   <tr>
-    <th scope="row">{{ index + 1 }}</th>
+    <th scope="row"></th>
     <td>{{ stock.name }}</td>
-    <td>{{ stock.company.name }}</td>
+    <td>
+      <router-link :to="'/company/' + stock.company.pk">{{ stock.company.name }}</router-link>
+    </td>
     <td>{{ stock_amount ? stock_amount : stock.avail_amount }}</td>
     <td>{{ stock.price }}</td>
     <td>

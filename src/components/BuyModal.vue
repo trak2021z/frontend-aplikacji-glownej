@@ -16,7 +16,9 @@
           </div>
 
           <div class="md-form mb-4">
-            <input type="text" id="buyModalAmount" class="form-control validate">
+            <input type="number" id="buyModalAmount" class="form-control validate" min="1" max="5"
+                   v-model.number="$v.amount.$model"
+                   :class="{'is-invalid':$v.amount.$error, 'is-valid':!$v.amount.$invalid }">
             <label data-error="wrong" data-success="right" for="buyModalAmount">Stock Amount</label>
           </div>
 
@@ -27,7 +29,7 @@
 
         </div>
         <div class="modal-footer d-flex justify-content-center">
-          <button @click="buyStocks()" class="btn btn-success">Buy</button>
+          <button @click="buyStocks" class="btn btn-success">Buy</button>
         </div>
       </div>
     </div>
@@ -36,20 +38,44 @@
 
 <script>
 import jQuery from 'jquery';
+import {mapActions} from "vuex";
+import {required, between, integer} from "vuelidate/lib/validators";
 
 window.$ = window.jQuery = jQuery;
 
 export default {
   name: "BuyModal",
+  data() {
+    return {
+      msg: "",
+      amount: 1
+    }
+  },
   methods: {
+    ...mapActions(["buyStock"]),
     show() {
       jQuery('#modalBuyStock').modal()
     },
     hide() {
       this.$emit('hide');
     },
-    buyStocks() {
-      //this.buyStocks(this.selectedStockId, Math.floor(jQuery('#buyModalAmount').val()));
+    buyStocks(e) {
+        this.$v.$touch();
+        if (this.$v.$invalid) {
+          this.msg = 'Fill all fields correctly';
+          this.$v.$reset();
+        } else {
+          this.buyStock({
+            id: this.stock_id,
+            quantity: this.amount
+          }).then(response => {
+            this.status = response;
+            if(this.status === 200){
+              this.$v.$reset();
+            }
+          });
+        }
+        e.preventDefault();
     }
   },
   props: ["is_visible", "stock_id", "stock_price"],
@@ -58,6 +84,13 @@ export default {
       if(newVal){
         this.show();
       }
+    }
+  },
+  validations: {
+    amount: {
+      required,
+      integer,
+      between: between(1,500)
     }
   }
 }

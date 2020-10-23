@@ -2,7 +2,8 @@ import axios from 'axios';
 import authHeader from "@/stores/modules/auth-header";
 
 const state = {
-    stocks: null
+    stock: null,
+    stocks: null,
 }
 
 const actions = {
@@ -12,12 +13,35 @@ const actions = {
         commit('setStocks', response.data);
 
         return response.data;
-    }
+    },
+    async buyStock({commit}, form) {
+        return axios.post( 'stocks/' + form.id + '/buy/', form, {headers: authHeader()})
+            .then(response => {
+                commit('getStock', response.data);
+                return response.status
+            })
+            .catch(error => {
+                return error.response.status
+            });
+    },
+    async sellStock({commit}, form) {
+        return axios.post( 'user/stocks/' + form.id + '/sell/', form, {headers: authHeader()})
+            .then(response => {
+                commit('getStock', response.data);
+                return response.status
+            })
+            .catch(error => {
+                return error.response.status
+            });
+    },
 }
 
 const getters = {
     getStocks: state => {
         return state.stocks;
+    },
+    getStock: state => {
+        return state.stock;
     }
 }
 

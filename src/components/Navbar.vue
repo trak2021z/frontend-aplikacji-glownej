@@ -16,9 +16,6 @@
               <li :class="{'nav-item':this.currentPage !== 'companies', 'nav-item active':this.currentPage === 'companies' }">
                 <router-link class="nav-link" to="/companies">Companies</router-link>
               </li>
-              <li :class="{'nav-item':this.currentPage !== 'company', 'nav-item active':this.currentPage === 'company' }">
-                <router-link class="nav-link" to="/company">Company</router-link>
-              </li>
               <li :class="{'nav-item':this.currentPage !== 'user', 'nav-item active':this.currentPage === 'user' }">
                 <router-link class="nav-link" to="/user">Profile</router-link>
               </li>

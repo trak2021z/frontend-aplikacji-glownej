@@ -2,7 +2,7 @@ import Vue from 'vue';
 import Router from "vue-router";
 import Login from "@/components/Login";
 import Register from "@/components/Register";
-import CompaniesList from "@/components/CompaniesList";
+import Companies from "@/components/Companies";
 import Company from "@/components/Company";
 import Stocks from "@/components/Stocks";
 import User from "@/components/User";
@@ -57,11 +57,11 @@ const router = new Router({
         {
             path: '/companies',
             name: 'companies',
-            component: CompaniesList,
+            component: Companies,
             beforeEnter: ifAuthenticated
         },
         {
-            path: '/company',
+            path: '/company/:id',
             name: 'company',
             component: Company,
             beforeEnter: ifAuthenticated

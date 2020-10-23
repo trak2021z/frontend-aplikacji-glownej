@@ -16,18 +16,20 @@
           </div>
 
           <div class="md-form mb-4">
-            <input type="text" id="sellModalAmount" class="form-control validate">
+            <input type="number" id="sellModalAmount" class="form-control validate" min="1" max="5"
+                   v-model.number="$v.amount.$model"
+                   :class="{'is-invalid':$v.amount.$error, 'is-valid':!$v.amount.$invalid }">
             <label data-error="wrong" data-success="right" for="sellModalAmount">Stock Amount</label>
           </div>
 
           <div class="md-form mb-4">
-            <input v-model="stock_price" type="number" min="1" step="1" id="sellModalPrice" class="form-control validate" disabled>
+            <input v-model="stock_price" type="text" min="1" step="1" id="sellModalPrice" class="form-control validate" disabled>
             <label data-error="wrong" data-success="right" for="sellModalPrice">Current Price</label>
           </div>
 
         </div>
         <div class="modal-footer d-flex justify-content-center">
-          <button @click="sellStocks()" class="btn btn-success">Sell</button>
+          <button @click="sellStocks" class="btn btn-success">Sell</button>
         </div>
       </div>
     </div>
@@ -36,20 +38,44 @@
 
 <script>
 import jQuery from 'jquery';
+import {mapActions} from "vuex";
+import {between, integer, required} from "vuelidate/lib/validators";
 
 window.$ = window.jQuery = jQuery;
 
 export default {
   name: "SellModal",
+  data() {
+    return {
+      msg: "",
+      amount: 1
+    }
+  },
   methods: {
+    ...mapActions(["sellStock"]),
     show() {
       jQuery('#modalSellStock').modal()
     },
     hide() {
       this.$emit('hide');
     },
-    sellStocks() {
-      //this.buyStocks(this.selectedStockId, Math.floor(jQuery('#buyModalAmount').val()));
+    sellStocks(e) {
+      this.$v.$touch();
+      if (this.$v.$invalid) {
+        this.msg = 'Fill all fields correctly';
+        this.$v.$reset();
+      } else {
+        this.sellStock({
+          id: this.stock_id,
+          quantity: this.amount
+        }).then(response => {
+          this.status = response;
+          if(this.status === 200){
+            this.$v.$reset();
+          }
+        });
+      }
+      e.preventDefault();
     }
   },
   props: ["is_visible", "stock_id", "stock_price"],
@@ -58,6 +84,13 @@ export default {
       if(newVal){
         this.show();
       }
+    }
+  },
+  validations: {
+    amount: {
+      required,
+      integer,
+      between: between(1,500)
     }
   }
 }

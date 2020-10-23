@@ -4,8 +4,8 @@
       <h2>Hello, {{user.username}}</h2>
       <p>Your balance: {{user.profile.balance}}</p>
 
-      <BuyModal :is_visible="isBuyModalVisible" :stock_id="selectedStockId" :stock_price="selectedStockPrice" @hide="closeModals"/>
-      <SellModal :is_visible="isSellModalVisible" :stock_id="selectedStockId" :stock_price="selectedStockPrice" @hide="closeModals"/>
+      <buy-modal :is_visible="isBuyModalVisible" :stock_id="selectedStockId" :stock_price="selectedStockPrice" @hide="closeModals"/>
+      <sell-modal :is_visible="isSellModalVisible" :stock_id="selectedStockId" :stock_price="selectedStockPrice" @hide="closeModals"/>
 
       <table class="table table-hover">
         <thead>
@@ -19,7 +19,7 @@
         </tr>
         </thead>
         <tbody>
-        <StockRow
+        <stock-row
             v-for="(userStock, index) in userStocks" :key="userStock.pk"
             v-bind:index="index"
             v-bind:stock="userStock.stock"
@@ -85,7 +85,7 @@ export default {
       this.selectedStockPrice = price;
       this.isSellModalVisible = true;
     },
-    closeModals(){
+    async closeModals(){
       this.isBuyModalVisible = false;
       this.isSellModalVisible = false;
     },
