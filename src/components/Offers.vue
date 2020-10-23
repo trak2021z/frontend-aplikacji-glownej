@@ -160,16 +160,14 @@ export default {
             console.log('unit_price - ' + this.edt_unit_price);
             this.axios({ method: 'post', url: 'buyoffer', 
             data: {
-              user : this.user,
-              stock: this.stocks[this.selectedStock],
+              stock: this.stocks[this.selectedStock].pk,
               unit_price : this.edt_unit_price,
-              status: 1,
               stock_amount: this.edt_amount,
-              created: new Date()
             },
             headers: { Authorization: 'Bearer ' + localStorage.token } })
             .then(function (response) {
                 currentObj.output = response.data;
+                console.log('Buy Offer added sucessfully');
             })
             .catch(function (error) {
               currentObj.output = error;
@@ -182,15 +180,14 @@ export default {
             console.log('unit_price - ' + this.edt_unit_price);
             this.axios({ method: 'post', url: 'selloffer', 
             data: {
-              user_stock: this.userStocks[this.selectedStock],
+              user_stock: this.userStocks[this.selectedStock].pk,
               unit_price : this.edt_unit_price,
-              status: 1,
               stock_amount: this.edt_amount,
-              created: new Date()
             },
             headers: { Authorization: 'Bearer ' + localStorage.token } })
             .then(function (response) {
                 currentObj.output = response.data;
+                console.log('Sell Offer added sucessfully');
             })
             .catch(function (error) {
               currentObj.output = error;
