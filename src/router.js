@@ -8,6 +8,7 @@ import Stocks from "@/components/Stocks";
 import User from "@/components/User";
 import store from './stores/store';
 import TradeHistory from "@/components/TradeHistory";
+import Offers from "@/components/Offers";
 
 Vue.use(Router);
 
@@ -76,6 +77,12 @@ const router = new Router({
             path: '/trades/history',
             name: 'tradesHistory',
             component: TradeHistory,
+            beforeEnter: ifAuthenticated
+        },
+        {
+            path: '/offers',
+            name: 'offers',
+            component: Offers,
             beforeEnter: ifAuthenticated
         },
         {
