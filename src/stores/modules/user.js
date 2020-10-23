@@ -28,7 +28,7 @@ const getters = {
     getUser: state => {
         return state.user;
     },
-    getStock: state => {
+    getUserStocks: state => {
         return state.userStocks;
     }
 }

@@ -2,6 +2,10 @@
   <div class="main-container">
     <div class="main-table">
       <h2>Stocks</h2>
+
+      <BuyModal :is_visible="isBuyModalVisible" :stock_id="selectedStockId" :stock_price="selectedStockPrice" @hide="closeModals"/>
+      <SellModal :is_visible="isSellModalVisible" :stock_id="selectedStockId" :stock_price="selectedStockPrice" @hide="closeModals"/>
+
       <table class="table table-hover">
         <thead>
         <tr>
@@ -18,6 +22,8 @@
               v-for="(stock, index) in stocks" :key="stock.id"
               v-bind:index="index"
               v-bind:stock="stock"
+              @buy-stock-clicked="showBuyModal"
+              @sell-stock-clicked="showSellModal"
           />
         </tbody>
       </table>
@@ -26,66 +32,42 @@
 </template>
 
 <script>
+import {mapActions} from "vuex";
 import StockRow from "@/components/StockRow";
+import BuyModal from "@/components/BuyModal";
+import SellModal from "@/components/SellModal";
 
 export default {
 name: "Stocks",
-  components: {StockRow},
+  components: {StockRow, BuyModal, SellModal},
   data(){
     return{
-      stocks: [
-        {
-          "id": 1,
-          company: {
-            "id": 4,
-            "name": "Narodowy Bank Polski"
-          },
-          "name": "NBP",
-          "price": "202.00",
-          "avail_amount": 314
-        },
-        {
-          "id": 2,
-          company: {
-            "id": 7,
-            "name": "Telewizja Bolska"
-          },
-          "name": "TVP",
-          "price": "3.00",
-          "avail_amount": 62521
-        },
-        {
-          "id": 3,
-          company: {
-            "id": 2,
-            "name": "MałyMiękki"
-          },
-          "name": "MNCRFT",
-          "price": "1242.00",
-          "avail_amount": 88
-        },
-        {
-          "id": 4,
-          company: {
-            "id": 4,
-            "name": "Kasa Powszechna"
-          },
-          "name": "PKO",
-          "price": "516.00",
-          "avail_amount": 678
-        },
-        {
-          "id": 5,
-          company: {
-            "id": 1,
-            "name": "+18"
-          },
-          "name": "PRNHB",
-          "price": "1500000.00",
-          "avail_amount": 3
-        },
-      ]
+      selectedStockId: null,
+      selectedStockPrice: null,
+      isBuyModalVisible: false,
+      isSellModalVisible: false,
+      stocks: null
     }
+  },
+  methods: {
+    ...mapActions(["getStocksAction"]),
+    showBuyModal(id, price){
+      this.selectedStockId = id;
+      this.selectedStockPrice = price;
+      this.isBuyModalVisible = true;
+    },
+    showSellModal(id, price){
+      this.selectedStockId = id;
+      this.selectedStockPrice = price;
+      this.isSellModalVisible = true;
+    },
+    closeModals(){
+      this.isBuyModalVisible = false;
+      this.isSellModalVisible = false;
+    },
+  },
+  async created() {
+    this.stocks = await this.getStocksAction();
   }
 }
 </script>

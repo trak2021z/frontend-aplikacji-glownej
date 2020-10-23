@@ -4,8 +4,8 @@
       <h2>Hello, {{user.username}}</h2>
       <p>Your balance: {{user.profile.balance}}</p>
 
-      <BuyModal :is_visible="isBuyModalVisible" :stock_id="selectedStockId" :stock_price="selectedStockPrice" v-on:hide="closeModals"/>
-      <SellModal :is_visible="isSellModalVisible" :stock_id="selectedStockId" :stock_price="selectedStockPrice" v-on:hide="closeModals"/>
+      <BuyModal :is_visible="isBuyModalVisible" :stock_id="selectedStockId" :stock_price="selectedStockPrice" @hide="closeModals"/>
+      <SellModal :is_visible="isSellModalVisible" :stock_id="selectedStockId" :stock_price="selectedStockPrice" @hide="closeModals"/>
 
       <table class="table table-hover">
         <thead>
@@ -24,8 +24,8 @@
             v-bind:index="index"
             v-bind:stock="userStock.stock"
             v-bind:stock_amount="userStock.stock_amount"
-            v-on:buy-stock-clicked="showBuyModal"
-            v-on:sell-stock-clicked="showSellModal"
+            @buy-stock-clicked="showBuyModal"
+            @sell-stock-clicked="showSellModal"
         />
         </tbody>
       </table>
