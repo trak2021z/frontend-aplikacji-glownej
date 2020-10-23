@@ -16,7 +16,7 @@
           </div>
 
           <div class="md-form mb-4">
-            <input type="number" id="buyModalAmount" class="form-control validate" min="1" max="5"
+            <input type="number" id="buyModalAmount" class="form-control validate" min="1"
                    v-model.number="$v.amount.$model"
                    :class="{'is-invalid':$v.amount.$error, 'is-valid':!$v.amount.$invalid }">
             <label data-error="wrong" data-success="right" for="buyModalAmount">Stock Amount</label>
