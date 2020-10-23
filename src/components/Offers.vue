@@ -40,7 +40,7 @@
         <thead>
         <tr>
           <th scope="col">#</th>
-          <th scope="col">Type</th>
+          <th scope="col">Offer Type</th>
           <th scope="col">Status</th>
           <th scope="col">Stock Name</th>
           <th scope="col">Unit Price</th>
@@ -63,15 +63,24 @@
 </template>
 
 <script>
-import jQuery from 'jquery';
+import {integer, decimal} from "vuelidate/lib/validators";
 import {mapGetters, mapActions} from "vuex";
-window.$ = window.jQuery = jQuery;
 export default {
     data() {
     return {
       selectedOfferType : 1,
       userStocks: null,
       stocks: null,
+      buyOfferRequest: {
+        stock: 0,
+        unit_price: 0,
+        stock_amount: 0
+      },
+      sellOfferRequest: {
+        user_stock: 0,
+        unit_price: 0,
+        stock_amount: 0
+      },
       BuyOffers: {
         items: [
           {
@@ -115,6 +124,20 @@ export default {
             "stock": "Dummy Stock",
             "unit_price": 15.00,
             "stock_amount": 10
+          },
+          {
+            "type":"buy", 
+            "status":"buy",
+            "stock": "Dummy Stock",
+            "unit_price": 10.00,
+            "stock_amount": 30
+          },
+          {
+            "type":"buy", 
+            "status":"buy",
+            "stock": "Dummy Stock",
+            "unit_price": 15.00,
+            "stock_amount": 10
           }
         ]
       }
@@ -133,15 +156,19 @@ export default {
         }
     }
   },
-computed: mapGetters(["getUser"]),
-async created() {
-    this.user = await this.getUserAction();
-    this.userStocks = await this.getUserStockAction();
-    this.stocks = await this.getStocksAction();
-    console.log('stocks', this.stocks)
-  },
-validations: {
-    
-}
+    computed: mapGetters(["getUser"]),
+    async created() {
+        this.user = await this.getUserAction();
+        this.userStocks = await this.getUserStockAction();
+        this.stocks = await this.getStocksAction();
+    },
+    validations: {
+        edt_unit_price:{
+            decimal
+        },
+        edt_amount:{
+            integer
+        }
+    }
 }
 </script>
