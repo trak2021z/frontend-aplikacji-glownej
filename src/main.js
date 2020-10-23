@@ -12,6 +12,7 @@ import './fai';
 import axios from 'axios';
 import VueAxios from 'vue-axios'
 import store from './stores/store';
+import JwPagination from 'jw-vue-pagination';
 
 window.$ = window.jQuery = jQuery;
 
@@ -21,6 +22,7 @@ axios.defaults.baseURL = process.env.VUE_APP_BACKEND_URI;
 
 Vue.use(VueAxios, axios);
 Vue.use(Vuelidate);
+Vue.component('jw-pagination', JwPagination);
 
 new Vue({
   store,

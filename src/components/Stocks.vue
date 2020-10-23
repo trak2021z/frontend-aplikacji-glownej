@@ -1,8 +1,7 @@
 <template>
   <div class="main-container">
     <div class="main-table">
-      <h2>Hello, {{user.username}}</h2>
-      <p>Your balance: {{user.profile.balance}}</p>
+      <h2>Stocks</h2>
 
       <buy-modal :is_visible="isBuyModalVisible" :stock_id="selectedStockId" :stock_price="selectedStockPrice" @hide="closeModals"/>
       <sell-modal :is_visible="isSellModalVisible" :stock_id="selectedStockId" :stock_price="selectedStockPrice" @hide="closeModals"/>
@@ -19,63 +18,42 @@
         </tr>
         </thead>
         <tbody>
-        <stock-row
-            v-for="(userStock, index) in userStocks" :key="userStock.pk"
-            v-bind:index="index"
-            v-bind:stock="userStock.stock"
-            v-bind:stock_amount="userStock.stock_amount"
-            v-bind:user_stock_id="userStock.pk"
-            @buy-stock-clicked="showBuyModal"
-            @sell-stock-clicked="showSellModal"
-        />
+          <stock-row
+              v-for="(stock, index) in pageOfStocks" :key="stock.pk"
+              v-bind:index="index"
+              v-bind:stock="stock"
+              @buy-stock-clicked="showBuyModal"
+              @sell-stock-clicked="showSellModal"
+          />
         </tbody>
       </table>
-
+      <hr>
+      <jw-pagination v-if="stocks" :items="stocks" @changePage="onChangePage" />
     </div>
   </div>
 </template>
 
 <script>
-import {mapGetters, mapActions} from "vuex";
+import {mapActions} from "vuex";
 import StockRow from "@/components/StockRow";
 import BuyModal from "@/components/BuyModal";
 import SellModal from "@/components/SellModal";
 
 export default {
-  components: {SellModal, BuyModal, StockRow},
-  data() {
-    return {
+name: "Stocks",
+  components: {StockRow, BuyModal, SellModal},
+  data(){
+    return{
       selectedStockId: null,
       selectedStockPrice: null,
       isBuyModalVisible: false,
       isSellModalVisible: false,
-      email: localStorage.getItem('email'),
-      user: {
-        profile: {
-          balance: null
-        },
-        username: null
-      },
-      userStocks: [
-        {
-          pk: null,
-          stock: {
-            pk: null,
-            company: {
-              pk: null,
-              name: null
-            },
-            name: null,
-            price: null,
-            avail_amount: null
-          },
-          stock_amount: null
-        }
-      ]
+      stocks: null,
+      pageOfStocks: null,
     }
   },
   methods: {
-    ...mapActions(["getUserAction", "getUserStockAction"]),
+    ...mapActions(["getStocksAction"]),
     showBuyModal(id, price){
       this.selectedStockId = id;
       this.selectedStockPrice = price;
@@ -86,15 +64,20 @@ export default {
       this.selectedStockPrice = price;
       this.isSellModalVisible = true;
     },
-    async closeModals(){
+    closeModals(){
       this.isBuyModalVisible = false;
       this.isSellModalVisible = false;
     },
+    onChangePage(pageOfItems){
+      this.pageOfStocks = pageOfItems;
+    }
   },
-  computed: mapGetters(["getUser"]),
   async created() {
-    this.user = await this.getUserAction();
-    this.userStocks = await this.getUserStockAction();
+    this.stocks = await this.getStocksAction();
   }
 }
 </script>
+
+<style scoped>
+
+</style>

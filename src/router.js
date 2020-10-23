@@ -2,8 +2,9 @@ import Vue from 'vue';
 import Router from "vue-router";
 import Login from "@/components/Login";
 import Register from "@/components/Register";
-import CompaniesList from "@/components/CompaniesList";
+import Companies from "@/components/Companies";
 import Company from "@/components/Company";
+import Stocks from "@/components/Stocks";
 import User from "@/components/User";
 import store from './stores/store';
 import TradeHistory from "@/components/TradeHistory";
@@ -16,7 +17,7 @@ const ifNotAuthenticated = (to, from, next) => {
         next()
         return
     }
-    next('/companies')
+    next('/stocks')
 }
 
 const ifAuthenticated = (to, from, next) => {
@@ -49,13 +50,19 @@ const router = new Router({
             beforeEnter: ifNotAuthenticated
         },
         {
-            path: '/companies',
-            name: 'companies',
-            component: CompaniesList,
+            path: '/stocks',
+            name: 'stocks',
+            component: Stocks,
             beforeEnter: ifAuthenticated
         },
         {
-            path: '/company',
+            path: '/companies',
+            name: 'companies',
+            component: Companies,
+            beforeEnter: ifAuthenticated
+        },
+        {
+            path: '/company/:id',
             name: 'company',
             component: Company,
             beforeEnter: ifAuthenticated

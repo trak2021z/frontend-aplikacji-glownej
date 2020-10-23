@@ -75,7 +75,7 @@ export default {
           this.loginStatus();
           if(this.status === 200){
             this.$v.$reset();
-            router.replace('/companies');
+            router.replace('/stocks');
           }
         });
       }
