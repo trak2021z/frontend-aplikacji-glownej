@@ -22,6 +22,9 @@
               <li :class="{'nav-item':this.currentPage !== 'tradesHistory', 'nav-item active':this.currentPage === 'tradesHistory' }">
                 <router-link class="nav-link" to="/trades/history">Trades History</router-link>
               </li>
+              <li :class="{'nav-item':this.currentPage !== 'offers', 'nav-item active':this.currentPage === 'offers' }">
+                <router-link class="nav-link" to="/offers">Offers</router-link>
+              </li>
             </template>
           </ul>
           <ul class="navbar-nav ml-auto">
