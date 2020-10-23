@@ -24,6 +24,7 @@
             v-bind:index="index"
             v-bind:stock="userStock.stock"
             v-bind:stock_amount="userStock.stock_amount"
+            v-bind:user_stock_id="userStock.pk"
             @buy-stock-clicked="showBuyModal"
             @sell-stock-clicked="showSellModal"
         />

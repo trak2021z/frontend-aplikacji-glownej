@@ -72,6 +72,9 @@ export default {
           this.status = response;
           if(this.status === 200){
             this.$v.$reset();
+            this.hide();
+            jQuery('#modalSellStock').modal('hide');
+            location.reload();
           }
         });
       }

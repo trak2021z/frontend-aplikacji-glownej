@@ -9,7 +9,7 @@
     <td>{{ stock.price }}</td>
     <td>
       <button v-on:click="$emit('buy-stock-clicked', stock.pk, stock.price)" class="btn-success">Buy</button>
-      <button v-on:click="$emit('sell-stock-clicked', stock.pk, stock.price)" class="btn-danger">Sell</button>
+      <button v-on:click="$emit('sell-stock-clicked', user_stock_id ? user_stock_id : stock.pk, stock.price)" class="btn-danger">Sell</button>
     </td>
   </tr>
 </template>
@@ -21,7 +21,7 @@ export default {
     return {
     }
   },
-  props: ["index", "stock", "stock_amount"]
+  props: ["index", "stock", "stock_amount", "user_stock_id"]
 }
 </script>
 
