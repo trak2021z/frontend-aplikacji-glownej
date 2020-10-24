@@ -4,7 +4,6 @@ import auth from './modules/auth';
 import user from './modules/user';
 import stock from './modules/stock'
 import company from "./modules/company";
-import offers from './modules/offers';
 
 Vue.use(Vuex);
 
@@ -13,9 +12,7 @@ export default new Vuex.Store({
         auth,
         user,
         stock,
-        company,
-        offers
-
+        company
     }
 });
 
