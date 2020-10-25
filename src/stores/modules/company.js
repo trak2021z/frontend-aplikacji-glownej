@@ -15,11 +15,14 @@ const actions = {
         return response.data;
     },
     async getCompaniesAction({commit}) {
-        const response = await axios.get('company/', {headers: authHeader()})
-
-        commit('setCompanies', response.data);
-
-        return response.data;
+        return axios.get('company/', {headers: authHeader()})
+            .then(response => {
+                commit('setCompanies', response.data);
+                return response
+            })
+            .catch(error => {
+                return error.response
+            });
     }
 }
 
@@ -27,7 +30,7 @@ const getters = {
     getCompany: state => {
         return state.company;
     },
-    getCompanies: state => {
+    allCompanies: state => {
         return state.companies;
     }
 }

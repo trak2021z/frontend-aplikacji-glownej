@@ -14,7 +14,7 @@
             <div class="col">
                 <select name="sel_stocks" reactive="true" v-model="selectedStock" @change="onChangeStock" v-if="selectedOfferType == 1" class="browser-default custom-select">
                 <option selected disabled value>Please choose stock</option>
-                <option v-for="(item, index) in stocks" v-bind:value="index" :key="item.id"> {{item.name}} - {{item.price}} </option>
+                <option v-for="(item, index) in allStocks" v-bind:value="index" :key="item.id"> {{item.name}} - {{item.price}} </option>
               </select>
               <select name="sel_stocks" reactive="true" v-model="selectedStock" @change="onChangeStock" v-if="selectedOfferType == 2" class="browser-default custom-select">
                 <option selected disabled value>Please choose stock</option>
@@ -73,7 +73,6 @@ export default {
       userStocks: null,
       edt_unit_price: 0.01,
       edt_amount: 1,
-      stocks: null,
       BuyOffers: {
         items: [
           {
@@ -160,7 +159,7 @@ export default {
             console.log('unit_price - ' + this.edt_unit_price);
             this.axios({ method: 'post', url: 'buyoffer', 
             data: {
-              stock: this.stocks[this.selectedStock].pk,
+              stock: this.allStocks[this.selectedStock].pk,
               unit_price : this.edt_unit_price,
               stock_amount: this.edt_amount,
             },
@@ -198,11 +197,11 @@ export default {
         }
     }
   },
-    computed: mapGetters(["getUser"]),
+    computed: mapGetters(["getUser", "allStocks"]),
     async created() {
         this.user = await this.getUserAction();
         this.userStocks = await this.getUserStockAction();
-        this.stocks = await this.getStocksAction();
+        await this.getStocksAction();
     },
     validations: {
         edt_unit_price:{

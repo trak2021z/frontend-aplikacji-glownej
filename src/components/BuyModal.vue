@@ -17,8 +17,8 @@
 
           <div class="md-form mb-4">
             <input type="number" id="buyModalAmount" class="form-control validate" min="1"
-                   v-model.number="$v.amount.$model"
-                   :class="{'is-invalid':$v.amount.$error, 'is-valid':!$v.amount.$invalid }">
+                   v-model.number="$v.quantity.$model"
+                   :class="{'is-invalid':$v.quantity.$error, 'is-valid':!$v.quantity.$invalid }">
             <label data-error="wrong" data-success="right" for="buyModalAmount">Stock Amount</label>
           </div>
 
@@ -48,7 +48,7 @@ export default {
   data() {
     return {
       msg: "",
-      amount: 1
+      quantity: 1
     }
   },
   methods: {
@@ -66,15 +66,15 @@ export default {
           this.$v.$reset();
         } else {
           this.buyStock({
-            id: this.stock_id,
-            quantity: this.amount
+            stockId: this.stock_id,
+            quantity: this.quantity
           }).then(response => {
-            this.status = response;
-            if(this.status === 200){
+            if(response.status === 200){
               this.$v.$reset();
               this.hide();
               jQuery('#modalBuyStock').modal('hide');
-              location.reload();
+            } else {
+              alert(response.data.error);
             }
           });
         }
@@ -90,10 +90,10 @@ export default {
     }
   },
   validations: {
-    amount: {
+    quantity: {
       required,
       integer,
-      between: between(1,500)
+      between: between(1,10000)
     }
   }
 }

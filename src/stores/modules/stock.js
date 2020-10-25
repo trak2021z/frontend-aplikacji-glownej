@@ -8,46 +8,48 @@ const state = {
 
 const actions = {
     async getStocksAction({commit}) {
-        const response = await axios.get('stocks/', {headers: authHeader()})
-
-        commit('setStocks', response.data);
-
-        return response.data;
-    },
-    async buyStock({commit}, form) {
-        return axios.post( 'stocks/' + form.id + '/buy/', form, {headers: authHeader()})
+        return axios.get('stocks/', {headers: authHeader()})
             .then(response => {
-                commit('getStock', response.data);
-                return response.status
+                commit('setStocks', response.data);
+                return response
             })
             .catch(error => {
-                return error.response.status
+                return error.response
             });
     },
-    async sellStock({commit}, form) {
-        return axios.post( 'user/stocks/' + form.id + '/sell/', form, {headers: authHeader()})
+    async buyStock({commit}, {stockId, quantity}) {
+        return axios.post( `stocks/${stockId}/buy/`, {quantity: quantity}, {headers: authHeader()})
             .then(response => {
-                commit('getStock', response.data);
-                return response.status
+                commit('setStock', response.data);
+                return response
             })
             .catch(error => {
-                return error.response.status
+                return error.response
+            });
+    },
+    async sellStock({commit}, {userStockId, quantity}) {
+        return axios.post( `stocks/${userStockId}/sell/`, {quantity: quantity}, {headers: authHeader()})
+            .then(response => {
+                commit('setStock', response.data);
+                return response
+            })
+            .catch(error => {
+                return error.response
             });
     },
 }
 
 const getters = {
-    getStocks: state => {
-        return state.stocks;
-    },
-    getStock: state => {
-        return state.stock;
-    }
+    allStocks: state => state.stocks,
+    getStock: state => state.stock
 }
 
 const mutations = {
     setStocks: (state, stocks) => {
         state.stocks = stocks;
+    },
+    setStock: (state, stock) => {
+        state.stock = stock;
     },
 }
 export default {
