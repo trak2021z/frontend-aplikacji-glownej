@@ -1,13 +1,20 @@
-FROM node:14.4.0-alpine3.10
+FROM node:14.4.0-alpine3.10 as build-stage
 
 USER root
 
 RUN apk update
-RUN apk add --no-cache \
-    git 
-WORKDIR /app
-RUN git clone https://github.com/aplikacje-internetowe-l2/frontend-aplikacji-glownej.git
 
-WORKDIR /app/frontend-aplikacji-glownej
-RUN cp .env.example .env
+WORKDIR /app
+
+COPY package*.json ./
 RUN npm install
+COPY . .
+RUN npm run build
+
+FROM nginx:stable-alpine as production-stage
+RUN rm /etc/nginx/conf.d/default.conf
+COPY ./nginx/conf.d/ /etc/nginx/conf.d
+
+COPY --from=build-stage /app/dist /var/www
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]
