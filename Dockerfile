@@ -1,20 +1,8 @@
-FROM node:14.4.0-alpine3.10 as build-stage
-
-USER root
-
-RUN apk update
-
-WORKDIR /app
-
-COPY package*.json ./
+FROM node:lts-alpine 
+WORKDIR app
+COPY package.json /app/package.json
 RUN npm install
+RUN npm install @vue/cli@3.7.0 -g
+COPY .env.example .env
 COPY . .
-RUN npm run build
-
-FROM nginx:stable-alpine as production-stage
-RUN rm /etc/nginx/conf.d/default.conf
-COPY ./nginx/conf.d/ /etc/nginx/conf.d
-
-COPY --from=build-stage /app/dist /var/www
-EXPOSE 80
-CMD ["nginx", "-g", "daemon off;"]
+CMD ["npm", "run", "serve"]
