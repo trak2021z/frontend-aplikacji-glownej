@@ -28,7 +28,7 @@ const actions = {
             });
     },
     async sellStock({commit}, {userStockId, quantity}) {
-        return axios.post( `stocks/${userStockId}/sell/`, {quantity: quantity}, {headers: authHeader()})
+        return axios.post( `user/stocks/${userStockId}/sell/`, {quantity: quantity}, {headers: authHeader()})
             .then(response => {
                 commit('setStock', response.data);
                 return response
