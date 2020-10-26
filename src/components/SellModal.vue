@@ -66,7 +66,7 @@ export default {
         this.$v.$reset();
       } else {
         this.sellStock({
-          id: this.stock_id,
+          userStockId: this.stock_id,
           quantity: this.amount
         }).then(response => {
           this.status = response;

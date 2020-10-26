@@ -73,6 +73,7 @@ export default {
               this.$v.$reset();
               this.hide();
               jQuery('#modalBuyStock').modal('hide');
+              location.reload();
             } else {
               alert(response.data.error);
             }
