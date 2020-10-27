@@ -26,11 +26,10 @@
           </thead>
           <tbody>
           <stock-row
-              v-for="(stock, index) in pageOfStocks" :key="stock.pk"
-              v-bind:index="index"
-              v-bind:stock="stock"
-              @buy-stock-clicked="showBuyModal"
-              @sell-stock-clicked="showSellModal"
+              v-for="stock in pageOfStocks" :key="stock.pk"
+              :stock="stock"
+              :is-user-stock="false"
+              @stock-clicked="showBuySellModal"
           />
           </tbody>
         </table>
@@ -64,6 +63,13 @@ export default {
   },
   methods: {
     ...mapActions(["getStocksAction"]),
+    showBuySellModal(stock, isSell){
+      if(isSell){
+        this.showSellModal(stock.pk, stock.price)
+      } else {
+        this.showBuyModal(stock.pk, stock.price)
+      }
+    },
     showBuyModal(id, price){
       this.selectedStockId = id;
       this.selectedStockPrice = price;

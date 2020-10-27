@@ -11,8 +11,7 @@
       </template>
 
       <template v-else>
-        <buy-modal :is_visible="isBuyModalVisible" :stock_id="selectedStockId" :stock_price="selectedStockPrice" @hide="closeModals"/>
-        <sell-modal :is_visible="isSellModalVisible" :stock_id="selectedStockId" :stock_price="selectedStockPrice" @hide="closeModals"/>
+        <buy-sell-modal :is-visible="isBuySellModalVisible" :is-sell="isSellAction" :stock-row="selectedStock" @hide="closeModal"/>
 
         <table class="table table-hover">
           <thead>
@@ -27,13 +26,10 @@
           </thead>
           <tbody>
           <stock-row
-              v-for="(userStock, index) in pageOfUserStocks" :key="userStock.pk"
-              v-bind:index="index"
-              v-bind:stock="userStock.stock"
-              v-bind:stock_amount="userStock.stock_amount"
-              v-bind:user_stock_id="userStock.pk"
-              @buy-stock-clicked="showBuyModal"
-              @sell-stock-clicked="showSellModal"
+              v-for="userStock in pageOfUserStocks" :key="userStock.pk"
+              :stock="userStock"
+              :is-user-stock="true"
+              @stock-clicked="showBuySellModal"
           />
           </tbody>
         </table>
@@ -48,19 +44,17 @@
 <script>
 import {mapGetters, mapActions} from "vuex";
 import StockRow from "@/components/StockRow";
-import BuyModal from "@/components/BuyModal";
-import SellModal from "@/components/SellModal";
+import BuySellModal from "@/components/BuySellModal";
 
 export default {
-  components: {SellModal, BuyModal, StockRow},
+  components: {BuySellModal, StockRow},
   data() {
     return {
       isComputing: false,
       pageOfUserStocks: null,
-      selectedStockId: null,
-      selectedStockPrice: null,
-      isBuyModalVisible: false,
-      isSellModalVisible: false,
+      isBuySellModalVisible: false,
+      selectedStock: null,
+      isSellAction: false,
       email: localStorage.getItem('email'),
       user: {
         profile: {
@@ -72,19 +66,13 @@ export default {
   },
   methods: {
     ...mapActions(["getUserAction", "getUserStocksAction"]),
-    showBuyModal(id, price){
-      this.selectedStockId = id;
-      this.selectedStockPrice = price;
-      this.isBuyModalVisible = true;
+    showBuySellModal(stock, isSell){
+      this.selectedStock = stock;
+      this.isSellAction = isSell;
+      this.isBuySellModalVisible = true;
     },
-    showSellModal(id, price){
-      this.selectedStockId = id;
-      this.selectedStockPrice = price;
-      this.isSellModalVisible = true;
-    },
-    closeModals(){
-      this.isBuyModalVisible = false;
-      this.isSellModalVisible = false;
+    closeModal(){
+      this.isBuySellModalVisible = false;
     },
     onChangePage(pageOfItems){
       this.pageOfUserStocks = pageOfItems;
