@@ -58,6 +58,7 @@ export default {
     },
     hide() {
       this.$emit('hide');
+      jQuery('#modalBuyStock').modal('hide');
     },
     buyStocks(e) {
         this.$v.$touch();
@@ -72,8 +73,6 @@ export default {
             if(response.status === 200){
               this.$v.$reset();
               this.hide();
-              jQuery('#modalBuyStock').modal('hide');
-              location.reload();
             } else {
               alert(response.data.error);
             }

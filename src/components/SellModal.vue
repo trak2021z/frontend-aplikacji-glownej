@@ -54,10 +54,11 @@ export default {
   methods: {
     ...mapActions(["sellStock"]),
     show() {
-      jQuery('#modalSellStock').modal()
+      jQuery('#modalSellStock').modal();
     },
     hide() {
       this.$emit('hide');
+      jQuery('#modalSellStock').modal('hide');
     },
     sellStocks(e) {
       this.$v.$touch();
@@ -69,12 +70,11 @@ export default {
           userStockId: this.stock_id,
           quantity: this.amount
         }).then(response => {
-          this.status = response;
-          if(this.status === 200){
+          if(response.status === 200){
             this.$v.$reset();
             this.hide();
-            jQuery('#modalSellStock').modal('hide');
-            location.reload();
+          } else {
+            alert(response.data.error);
           }
         });
       }

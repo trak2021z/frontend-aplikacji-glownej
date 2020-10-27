@@ -144,7 +144,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(["getUserAction", "getUserStockAction", "getStocksAction"]),
+    ...mapActions(["getUserAction", "getUserStocksAction", "getStocksAction"]),
     onChange(){
         console.log('Offer type selected: ', this.selectedOfferType);
     },
@@ -197,10 +197,11 @@ export default {
         }
     }
   },
-    computed: mapGetters(["getUser", "allStocks"]),
+    computed: mapGetters(["getUser", "allStocks", "allUserStocks"]),
     async created() {
         this.user = await this.getUserAction();
-        this.userStocks = await this.getUserStockAction();
+        await this.getUserStocksAction();
+        this.userStocks = this.allUserStocks;
         await this.getStocksAction();
     },
     validations: {
