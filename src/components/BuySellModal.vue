@@ -87,7 +87,7 @@ export default {
                 this.$v.$reset();
                 this.hide();
               } else {
-                alert(response.data.error);
+                alert(`${response.status}: ${response.data.error}`);
               }
             });
           } else {
@@ -100,7 +100,7 @@ export default {
                 this.$v.$reset();
                 this.hide();
               } else {
-                alert(response.data.error);
+                alert(`${response.status}: ${response.data.error}`);
               }
             });
           }

@@ -85,7 +85,7 @@ export default {
     try {
       let response = await this.getUserStocksAction();
       if(response.status !== 200){
-        alert(response.data.error);
+        alert(`${response.status}: ${response.data.error}`);
       }
     }catch(e){
       console.log(e);

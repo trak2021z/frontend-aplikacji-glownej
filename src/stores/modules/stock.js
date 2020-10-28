@@ -64,22 +64,26 @@ const mutations = {
         state.userStocks = userStocks;
     },
     updateStocks: (state, stockUpdate) => {
-        const index = state.stocks.findIndex(stock => stock.pk === stockUpdate.pk);
+        if(state.stocks){
+            const index = state.stocks.findIndex(stock => stock.pk === stockUpdate.pk);
 
-        if(index > -1) {
-            state.stocks.splice(index, 1, stockUpdate);
+            if(index > -1) {
+                state.stocks.splice(index, 1, stockUpdate);
+            }
         }
     },
     updateUserStocks: (state, stockUpdate) => {
-        const index = state.userStocks.findIndex(userStock => userStock.pk === stockUpdate.pk);
+        if(state.userStocks){
+            const index = state.userStocks.findIndex(userStock => userStock.pk === stockUpdate.pk);
 
-        if(index > -1) {
-            state.userStocks.splice(index, 1, stockUpdate);
-        } else {
-            if(stockUpdate.stock_amount < 1){
-                state.userStocks.splice(index, 1);
+            if(index > -1) {
+                state.userStocks.splice(index, 1, stockUpdate);
             } else {
-                state.userStocks.push(stockUpdate);
+                if(stockUpdate.stock_amount < 1){
+                    state.userStocks.splice(index, 1);
+                } else {
+                    state.userStocks.push(stockUpdate);
+                }
             }
         }
     }
