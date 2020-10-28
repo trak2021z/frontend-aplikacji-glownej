@@ -8,7 +8,6 @@
       <table class="table table-hover">
         <thead>
         <tr>
-          <th scope="col">#</th>
           <th scope="col">Stock</th>
           <th scope="col">Company</th>
           <th scope="col">Amount</th>
