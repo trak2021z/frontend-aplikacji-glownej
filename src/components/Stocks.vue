@@ -10,8 +10,7 @@
       </template>
 
       <template v-else>
-        <buy-modal :is_visible="isBuyModalVisible" :stock_id="selectedStockId" :stock_price="selectedStockPrice"  @hide="closeModals"/>
-        <sell-modal :is_visible="isSellModalVisible" :stock_id="selectedStockId" :stock_price="selectedStockPrice" @hide="closeModals"/>
+        <buy-sell-modal :is-visible="isBuySellModalVisible" :is-sell="isSellAction" :stock-row="selectedStock" @hide="closeModal"/>
 
         <table class="table table-hover">
           <thead>
@@ -44,45 +43,30 @@
 <script>
 import {mapActions, mapGetters} from "vuex";
 import StockRow from "@/components/StockRow";
-import BuyModal from "@/components/BuyModal";
-import SellModal from "@/components/SellModal";
+import BuySellModal from "@/components/BuySellModal";
 
 export default {
   name: "Stocks",
   computed: mapGetters(['allStocks']),
-  components: {StockRow, BuyModal, SellModal},
+  components: {BuySellModal, StockRow},
   data(){
     return{
       isComputing: false,
-      selectedStockId: null,
-      selectedStockPrice: null,
-      isBuyModalVisible: false,
-      isSellModalVisible: false,
+      isBuySellModalVisible: false,
+      selectedStock: null,
+      isSellAction: false,
       pageOfStocks: null,
     }
   },
   methods: {
     ...mapActions(["getStocksAction"]),
     showBuySellModal(stock, isSell){
-      if(isSell){
-        this.showSellModal(stock.pk, stock.price)
-      } else {
-        this.showBuyModal(stock.pk, stock.price)
-      }
+      this.selectedStock = stock;
+      this.isSellAction = isSell;
+      this.isBuySellModalVisible = true;
     },
-    showBuyModal(id, price){
-      this.selectedStockId = id;
-      this.selectedStockPrice = price;
-      this.isBuyModalVisible = true;
-    },
-    showSellModal(id, price){
-      this.selectedStockId = id;
-      this.selectedStockPrice = price;
-      this.isSellModalVisible = true;
-    },
-    closeModals(){
-      this.isBuyModalVisible = false;
-      this.isSellModalVisible = false;
+    closeModal(){
+      this.isBuySellModalVisible = false;
     },
     onChangePage(pageOfItems){
       this.pageOfStocks = pageOfItems;

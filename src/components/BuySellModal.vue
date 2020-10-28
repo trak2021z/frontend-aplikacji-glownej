@@ -116,11 +116,13 @@ export default {
       }
     }
   },
-  validations: {
-    quantity: {
-      required,
-      integer,
-      between: between(1, 10)
+  validations() {
+    return {
+      quantity: {
+        required,
+        integer,
+        between: between(1, this.available_amount)
+      }
     }
   }
 }
