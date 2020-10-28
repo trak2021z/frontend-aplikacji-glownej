@@ -1,6 +1,6 @@
 <template>
   <div class="main-container">
-    <div class="main-table">
+    <div class="vld-parent main-table">
       <h2>Hello, {{user.username}}</h2>
       <p>Your balance: {{user.profile.balance}}</p>
 
