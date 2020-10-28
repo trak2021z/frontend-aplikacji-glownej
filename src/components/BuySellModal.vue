@@ -10,22 +10,36 @@
           </button>
         </div>
         <div class="modal-body mx-3">
-          <div class="md-form mb-5">
-            <input v-model="id" type="text" id="stockId" class="form-control validate" disabled>
-            <label data-error="wrong" data-success="right" for="stockId">Stock Id</label>
-          </div>
 
-          <div class="md-form mb-4">
-            <input type="number" id="stockQuantity" class="form-control validate" min="1" :max="available_amount"
+          <table class="table table-borderless table-hover">
+            <thead>
+            <tr>
+              <th scope="col" colspan="2">{{stockRow.name}}</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+              <td class="text-left">Available amount: {{available_amount}}</td>
+              <td class="text-right">Price: {{price}}</td>
+            </tr>
+            </tbody>
+          </table>
+
+          <div class="md-form mb-1">
+            <input type="number" id="stockQuantity" class="form-control validate"
+                   maxlength="10" min="1" :max="available_amount"
+                   placeholder="Stock amount..."
                    v-model.number="$v.quantity.$model"
                    :class="{'is-invalid':$v.quantity.$error, 'is-valid':!$v.quantity.$invalid }">
-            <label data-error="wrong" data-success="right" for="stockQuantity">Stock Amount</label>
+            <div class="invalid-feedback">
+              <span v-if="!$v.quantity.required">Stock Amount is required!</span>
+              <span v-if="!$v.quantity.integer">Amount has to be an integer!</span>
+              <span v-if="!$v.quantity.between">That amount is not available!</span>
+              <span v-if="!$v.quantity.userCanAfford">You can't afford that!</span>
+            </div>
           </div>
 
-          <div class="md-form mb-4">
-            <input v-model="price" type="text" id="stockPrice" class="form-control validate" disabled>
-            <label data-error="wrong" data-success="right" for="stockPrice">Current Price</label>
-          </div>
+          <h4 class="text-dark text-right">Total: {{isSell ? '+' : '-'}}{{total}}</h4>
 
         </div>
         <div class="modal-footer d-flex justify-content-center">
@@ -38,38 +52,35 @@
 
 <script>
 import jQuery from 'jquery';
-import {mapActions} from "vuex";
+import {mapActions, mapGetters} from "vuex";
 import {required, between, integer} from "vuelidate/lib/validators";
 
 window.$ = window.jQuery = jQuery;
+
+function userCanAfford (value){
+  if(!this.isSell){
+    return this.getUser.profile.balance >= value * this.price;
+  }
+
+  return true;
+}
 
 export default {
   name: "BuySellModal",
   data() {
     return {
       msg: "",
-      id: 0,
-      quantity: 1,
-      price: 0.00,
-      available_amount: 0
+      quantity: "",
     }
   },
   methods: {
     ...mapActions(["buyStock", "sellStock"]),
     show() {
-      this.setValues();
       jQuery('#modalBuySellStock').modal()
     },
     hide() {
       this.$emit('hide');
       jQuery('#modalBuySellStock').modal('hide');
-    },
-    setValues(){
-      const stock = this.stockRow;
-
-      this.id = this.isSell ? stock.owned_pk : stock.pk;
-      this.price = stock.price;
-      this.available_amount = this.isSell ? stock.owned_amount : stock.avail_amount;
     },
     performTransaction(e) {
         this.$v.$touch();
@@ -108,7 +119,37 @@ export default {
         e.preventDefault();
     }
   },
-  props: ["isVisible", "isSell", "stockRow"],
+  props: {
+    isVisible: {
+      type: Boolean,
+      required: true
+    },
+    isSell: {
+      type: Boolean,
+      required: true
+    },
+    stockRow: {
+      type: Object,
+      required: true
+    }
+  },
+  computed: {
+    ...mapGetters(["getUser"]),
+    id: function(){
+      return this.isSell ? this.stockRow.owned_pk : this.stockRow.pk;
+    },
+    price: function (){
+      return this.stockRow.price;
+    },
+    available_amount: function (){
+      return this.isSell ? this.stockRow.owned_amount : this.stockRow.avail_amount;
+    },
+    total: function (){
+      const total = this.quantity * this.price;
+
+      return total >= 0 ? total.toFixed(2) : 0;
+    }
+  },
   watch: {
     isVisible: function(newVal) {
       if(newVal){
@@ -121,7 +162,8 @@ export default {
       quantity: {
         required,
         integer,
-        between: between(1, this.available_amount)
+        between: between(1, this.available_amount),
+        userCanAfford
       }
     }
   }

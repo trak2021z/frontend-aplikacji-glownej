@@ -52,7 +52,7 @@ export default {
     return{
       isComputing: false,
       isBuySellModalVisible: false,
-      selectedStock: null,
+      selectedStock: {},
       isSellAction: false,
       pageOfStocks: null,
     }
