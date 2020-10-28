@@ -1,15 +1,15 @@
 <template>
   <tr>
     <th scope="row"></th>
-    <td>{{ stock.name }}</td>
+    <td>{{stockRow.name}}</td>
     <td>
-      <router-link :to="'/company/' + stock.company.pk">{{ stock.company.name }}</router-link>
+      <router-link :to="'/company/' + stockRow.company.pk">{{ stockRow.company.name }}</router-link>
     </td>
-    <td>{{ stock_amount ? stock_amount : stock.avail_amount }}</td>
-    <td>{{ stock.price }}</td>
+    <td>{{ isUserStock ? stockRow.owned_amount : stockRow.avail_amount }}</td>
+    <td>{{ stockRow.price }}</td>
     <td>
-      <button v-on:click="$emit('buy-stock-clicked', stock.pk, stock.price)" class="btn-success">Buy</button>
-      <button v-on:click="$emit('sell-stock-clicked', user_stock_id ? user_stock_id : stock.pk, stock.price)" class="btn-danger">Sell</button>
+      <button v-on:click="onClick(false)" class="btn-success">Buy</button>
+      <button v-if="isUserStock" v-on:click="onClick(true)" class="btn-danger">Sell</button>
     </td>
   </tr>
 </template>
@@ -17,11 +17,25 @@
 <script>
 export default {
   name: "StockRow",
-  data() {
-    return {
+  methods: {
+    onClick(isSell){
+      this.$emit('stock-clicked', this.stockRow, isSell);
     }
   },
-  props: ["index", "stock", "stock_amount", "user_stock_id"]
+  computed: {
+    stockRow: function () {
+      if (this.isUserStock) {
+        let unifiedStock = this.stock.stock;
+        unifiedStock.owned_pk = this.stock.pk;
+        unifiedStock.owned_amount = this.stock.stock_amount;
+
+        return unifiedStock;
+      }
+
+      return this.stock;
+    }
+  },
+  props: ["stock", "isUserStock"]
 }
 </script>
 
