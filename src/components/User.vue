@@ -1,9 +1,6 @@
 <template>
   <div class="main-container">
     <div class="vld-parent main-table">
-      <h2>Hello, {{user.username}}</h2>
-      <p>Your balance: {{user.profile.balance}}</p>
-
       <loading :active.sync="isComputing" :is-full-page="false"/>
 
       <template v-if="!allUserStocks">
@@ -11,6 +8,10 @@
       </template>
 
       <template v-else>
+        <h2>Hello, {{getUser.email}}</h2>
+
+        <p>Your balance: {{getUser.profile.balance}}</p>
+
         <buy-sell-modal :is-visible="isBuySellModalVisible" :is-sell="isSellAction" :stock-row="selectedStock" @hide="closeModal"/>
 
         <table class="table table-hover">
@@ -53,14 +54,7 @@ export default {
       pageOfUserStocks: null,
       isBuySellModalVisible: false,
       selectedStock: null,
-      isSellAction: false,
-      email: localStorage.getItem('email'),
-      user: {
-        profile: {
-          balance: null
-        },
-        username: null
-      },
+      isSellAction: false
     }
   },
   methods: {
@@ -70,8 +64,9 @@ export default {
       this.isSellAction = isSell;
       this.isBuySellModalVisible = true;
     },
-    closeModal(){
+    async closeModal(){
       this.isBuySellModalVisible = false;
+      await this.getUserAction();
     },
     onChangePage(pageOfItems){
       this.pageOfUserStocks = pageOfItems;
