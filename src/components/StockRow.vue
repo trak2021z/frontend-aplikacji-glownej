@@ -1,6 +1,5 @@
 <template>
   <tr>
-    <th scope="row"></th>
     <td>{{stockRow.name}}</td>
     <td>
       <router-link :to="'/company/' + stockRow.company.pk">{{ stockRow.company.name }}</router-link>

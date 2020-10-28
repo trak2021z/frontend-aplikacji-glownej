@@ -13,14 +13,12 @@
         <table class="table table-hover">
           <thead>
           <tr>
-            <th scope="col">#</th>
             <th scope="col">Company Name</th>
             <th scope="col">Show Company</th>
           </tr>
           </thead>
           <tbody>
           <tr v-for="(company) in pageOfCompanies" :key="company.pk">
-            <th scope="row"></th>
             <td>{{ company.name }}</td>
             <td>
               <router-link :to="'/company/' + company.pk">
@@ -61,7 +59,7 @@ export default {
     try {
       let response = await this.getCompaniesAction();
       if(response.status !== 200){
-        alert(response.data.error);
+        alert(`${response.status}: ${response.data.error}`);
       }
     }catch(e){
       console.log(e);

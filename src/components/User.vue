@@ -16,7 +16,6 @@
         <table class="table table-hover">
           <thead>
           <tr>
-            <th scope="col">#</th>
             <th scope="col">Stock</th>
             <th scope="col">Company</th>
             <th scope="col">Amount</th>
@@ -85,7 +84,7 @@ export default {
     try {
       let response = await this.getUserStocksAction();
       if(response.status !== 200){
-        alert(response.data.error);
+        alert(`${response.status}: ${response.data.error}`);
       }
     }catch(e){
       console.log(e);
