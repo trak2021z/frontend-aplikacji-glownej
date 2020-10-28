@@ -3,15 +3,15 @@
        aria-hidden="true" data-keyboard="false" data-backdrop="static">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
-        <div class="modal-header text-center">
+        <div class="modal-header">
           <h4 class="modal-title w-100 font-weight-bold">{{ isSell ? "Sell" : "Buy" }} Stocks</h4>
-          <button @click="hide" type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <button @click="hide" type="button" class="close position-absolute" style="right:4%" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
         <div class="modal-body mx-3">
 
-          <table class="table table-borderless table-hover">
+          <table class="table table-borderless">
             <thead>
             <tr>
               <th scope="col" colspan="2">{{stockRow.name}}</th>
@@ -79,6 +79,7 @@ export default {
       jQuery('#modalBuySellStock').modal()
     },
     hide() {
+      this.quantity = "";
       this.$emit('hide');
       jQuery('#modalBuySellStock').modal('hide');
     },
@@ -86,7 +87,6 @@ export default {
         this.$v.$touch();
         if (this.$v.$invalid) {
           this.msg = 'Fill all fields correctly';
-          this.$v.$reset();
         } else {
           if(this.isSell){
             this.sellStock({
