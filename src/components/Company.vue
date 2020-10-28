@@ -45,7 +45,7 @@ export default {
       pageOfStocks: null,
       isComputing: false,
       isBuySellModalVisible: false,
-      selectedStock: null,
+      selectedStock: {},
       isSellAction: false,
     }
   },

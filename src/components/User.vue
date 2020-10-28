@@ -53,7 +53,7 @@ export default {
       isComputing: false,
       pageOfUserStocks: null,
       isBuySellModalVisible: false,
-      selectedStock: null,
+      selectedStock: {},
       isSellAction: false
     }
   },
