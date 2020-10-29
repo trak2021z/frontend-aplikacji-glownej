@@ -12,7 +12,7 @@
           <th scope="col">Company</th>
           <th scope="col">Amount</th>
           <th scope="col">Price</th>
-          <th scope="col">Buy/Sell</th>
+          <th scope="col">Buy</th>
         </tr>
         </thead>
         <tbody>

@@ -14,9 +14,6 @@ export default {
   components: {
     Navbar
   },
-  store,
-  created() {
-    store.dispatch('getUserAction');
-  }
+  store
 }
 </script>
