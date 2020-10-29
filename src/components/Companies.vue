@@ -31,7 +31,13 @@
           </table>
         </div>
         <hr>
-        <jw-pagination :items="allCompanies" :maxPages="4" :labels="customLabels" @changePage="onChangePage" />
+        <paginator :items="allCompanies"
+                   :maxPages="4"
+                   :initialPage="currentPage"
+                   :labels="customLabels"
+                   :key="paginatorKey"
+                   @changePage="onChangePage"
+        />
       </template>
 
     </div>
@@ -40,19 +46,24 @@
 
 <script>
 import {mapActions, mapGetters} from "vuex";
+import Paginator from "@/components/Paginator";
 
 export default {
   name: "Companies",
+  components: {Paginator},
   computed: mapGetters(['allCompanies', 'customLabels']),
   data() {
     return {
       isComputing: false,
-      pageOfCompanies: null
+      pageOfCompanies: null,
+      currentPage: 1,
+      paginatorKey: 0
     }
   },
   methods: {
     ...mapActions(["getCompaniesAction"]),
-    onChangePage(pageOfItems){
+    onChangePage(pageOfItems, page){
+      this.currentPage = page;
       this.pageOfCompanies = pageOfItems;
     }
   },

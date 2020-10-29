@@ -35,7 +35,13 @@
         </div>
 
         <hr>
-        <jw-pagination :items="allStocks" :maxPages="4" :labels="customLabels" @changePage="onChangePage"/>
+        <paginator :items="allStocks"
+                   :maxPages="4"
+                   :initialPage="currentPage"
+                   :labels="customLabels"
+                   :key="paginatorKey"
+                   @changePage="onChangePage"
+        />
       </template>
 
     </div>
@@ -46,11 +52,12 @@
 import {mapActions, mapGetters} from "vuex";
 import StockRow from "@/components/StockRow";
 import BuySellModal from "@/components/BuySellModal";
+import Paginator from "@/components/Paginator";
 
 export default {
   name: "Stocks",
   computed: mapGetters(['allStocks', 'customLabels']),
-  components: {BuySellModal, StockRow},
+  components: {Paginator, BuySellModal, StockRow},
   data(){
     return{
       isComputing: false,
@@ -58,6 +65,8 @@ export default {
       selectedStock: {},
       isSellAction: false,
       pageOfStocks: null,
+      currentPage: 1,
+      paginatorKey: 0
     }
   },
   methods: {
@@ -69,8 +78,10 @@ export default {
     },
     closeModal(){
       this.isBuySellModalVisible = false;
+      this.paginatorKey += 1;
     },
-    onChangePage(pageOfItems){
+    onChangePage(pageOfItems, page){
+      this.currentPage = page;
       this.pageOfStocks = pageOfItems;
     }
   },
