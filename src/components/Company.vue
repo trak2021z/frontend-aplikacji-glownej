@@ -1,31 +1,48 @@
 <template>
   <div class="main-container">
     <div class="main-table">
-      <h2 v-if="company">{{ company.name }}</h2>
+      <h2 v-if="getCompany">{{ getCompany.name }}</h2>
 
-      <buy-sell-modal :is-visible="isBuySellModalVisible" :is-sell="isSellAction" :stock-row="selectedStock" @hide="closeModal"/>
+      <loading :active.sync="isComputing" :is-full-page="false"/>
 
-      <table class="table table-hover">
-        <thead>
-        <tr>
-          <th scope="col">Stock</th>
-          <th scope="col">Company</th>
-          <th scope="col">Amount</th>
-          <th scope="col">Price</th>
-          <th scope="col">Buy</th>
-        </tr>
-        </thead>
-        <tbody>
-        <stock-row
-            v-for="stock in pageOfStocks" :key="stock.pk"
-            :stock="stock"
-            :is-user-stock="false"
-            @stock-clicked="showBuySellModal"
+      <template v-if="!getCompany">
+        <h3 v-if="!isComputing">Oops... something went wrong!</h3>
+      </template>
+
+      <template v-else>
+        <buy-sell-modal :is-visible="isBuySellModalVisible" :is-sell="isSellAction" :stock-row="selectedStock" @hide="closeModal"/>
+
+        <div class="table-responsive">
+          <table class="table table-hover">
+            <thead>
+            <tr>
+              <th scope="col">Stock</th>
+              <th scope="col">Company</th>
+              <th scope="col">Amount</th>
+              <th scope="col">Price</th>
+              <th scope="col">Buy</th>
+            </tr>
+            </thead>
+            <tbody>
+            <stock-row
+                v-for="stock in pageOfStocks" :key="stock.pk"
+                :stock="stock"
+                :is-user-stock="false"
+                @stock-clicked="showBuySellModal"
+            />
+            </tbody>
+          </table>
+        </div>
+
+        <hr>
+        <paginator :items="companyStocks"
+                   :maxPages="4"
+                   :initialPage="currentPage"
+                   :labels="customLabels"
+                   :key="paginatorKey"
+                   @changePage="onChangePage"
         />
-        </tbody>
-      </table>
-      <hr>
-      <jw-pagination v-if="companyStocks" :items="companyStocks" :maxPages="4" :labels="customLabels" @changePage="onChangePage" />
+      </template>
     </div>
   </div>
 </template>
@@ -34,20 +51,20 @@
 import {mapActions, mapGetters} from "vuex";
 import StockRow from "@/components/StockRow";
 import BuySellModal from "@/components/BuySellModal";
+import Paginator from "@/components/Paginator";
 
 export default {
   name: "Company",
-  components: {StockRow, BuySellModal},
-  computed: mapGetters(['customLabels']),
+  components: {Paginator, StockRow, BuySellModal},
   data() {
     return {
-      company: null,
-      companyStocks: null,
       pageOfStocks: null,
       isComputing: false,
       isBuySellModalVisible: false,
       selectedStock: {},
       isSellAction: false,
+      currentPage: 1,
+      paginatorKey: 0
     }
   },
   methods: {
@@ -57,16 +74,33 @@ export default {
       this.isSellAction = isSell;
       this.isBuySellModalVisible = true;
     },
-    closeModal(){
+    async closeModal(){
+      await this.getCompanyAction(this.$route.params.id);
       this.isBuySellModalVisible = false;
+      this.paginatorKey += 1;
     },
-    onChangePage(pageOfItems){
+    onChangePage(pageOfItems, page) {
+      this.currentPage = page;
       this.pageOfStocks = pageOfItems;
     }
   },
+  computed: {
+    ...mapGetters(["getCompany", "customLabels"]),
+    companyStocks: function (){
+        return this.getCompany.stocks;
+    }
+  },
   async created() {
-    this.company = await this.getCompanyAction(this.$route.params.id);
-    this.companyStocks = this.company.stocks;
+    this.isComputing = true;
+    try {
+      let response = await this.getCompanyAction(this.$route.params.id);
+      if(response.status !== 200){
+        alert(`${response.status}: ${response.data.error}`);
+      }
+    }catch(e){
+      console.log(e);
+    }
+    this.isComputing = false;
   }
 }
 </script>
