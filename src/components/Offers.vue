@@ -156,8 +156,43 @@ export default {
     clickCancelOffer(par_pk, par_type) {
         if(par_type === 'buy'){
           console.log('BuyOffer cancellation attempt - ', par_pk)
+          let currentObj = this;
+          let url = 'buyoffer/' + par_pk;
+
+          this.axios({ method: 'delete', url, 
+          data: {
+            id: par_pk
+          },
+          headers: { Authorization: 'Bearer ' + localStorage.token } })
+          .then(function (response) {
+              currentObj.output = response.data;
+              console.log('Buy Offer cancelled sucessfully');
+              location.reload();
+              confirm('Buy Offer cancelled successfully'); 
+          })
+          .catch(function (error) {
+            currentObj.output = error;
+          });
+
         }else{
           console.log('SellOffer cancellation attempt - ', par_pk)
+          let currentObj = this;
+          let url = 'selloffer/' + par_pk;
+
+          this.axios({ method: 'delete', url, 
+          data: {
+            id: par_pk
+          },
+          headers: { Authorization: 'Bearer ' + localStorage.token } })
+          .then(function (response) {
+              currentObj.output = response.data;
+              console.log('Sell Offer cancelled sucessfully');
+              location.reload();
+              confirm('Sell Offer cancelled successfully'); 
+          })
+          .catch(function (error) {
+            currentObj.output = error;
+          });
         }
     },
   },
