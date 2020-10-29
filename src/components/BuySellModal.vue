@@ -39,7 +39,7 @@
             </div>
           </div>
 
-          <h4 class="text-dark text-right">Total: {{isSell ? '+' : '-'}}{{total}}</h4>
+          <h4 class="text-dark text-right">Total: {{total}}</h4>
 
         </div>
         <div class="modal-footer d-flex justify-content-center">
@@ -74,7 +74,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(["buyStock", "sellStock"]),
+    ...mapActions(["buyStock", "sellStock", "getUserAction"]),
     show() {
       jQuery('#modalBuySellStock').modal()
     },
@@ -146,9 +146,11 @@ export default {
       return this.isSell ? this.stockRow.owned_amount : this.stockRow.avail_amount;
     },
     total: function (){
-      const total = this.quantity * this.price;
+      let total = this.quantity * this.price;
+      total = total > 0.00 ? total : 0.00;
+      const prefix = this.isSell ? '+' : '-';
 
-      return total >= 0 ? total.toFixed(2) : 0;
+      return total > 0 ? prefix + total.toFixed(2) : total.toFixed(2);
     }
   },
   watch: {
@@ -167,6 +169,9 @@ export default {
         userCanAfford
       }
     }
+  },
+  async created() {
+    await this.getUserAction();
   }
 }
 </script>
