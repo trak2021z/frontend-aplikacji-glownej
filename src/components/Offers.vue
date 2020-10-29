@@ -61,7 +61,7 @@
           <td>{{ allStocks[item.stock].name }}</td>
           <td>{{ item.unit_price }}</td>
           <td>{{ item.stock_amount }}</td>
-          <td><button v-if="item.status === 1" class="btn-danger">Cancel</button></td>
+          <td><button v-if="item.status === 1" @click="clickCancelOffer(item.pk, item.offer_type)" class="btn-danger">Cancel</button></td>
         </tr>
         </tbody>
       </table>
@@ -152,7 +152,14 @@ export default {
               currentObj.output = error;
             });
         }
-    }
+    },
+    clickCancelOffer(par_pk, par_type) {
+        if(par_type === 'buy'){
+          console.log('BuyOffer cancellation attempt - ', par_pk)
+        }else{
+          console.log('SellOffer cancellation attempt - ', par_pk)
+        }
+    },
   },
     computed: mapGetters(["getOffers", "getUser", "allStocks", "allUserStocks"]),
     async created() {
