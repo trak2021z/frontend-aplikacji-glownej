@@ -58,7 +58,8 @@
           <td>{{ item.created }}</td>
           <td>{{ item.offer_type }}</td>
           <td>{{ item.status_name }}</td>
-          <td>{{ allStocks.find(element => (element.pk === item.stock)).name}}</td>
+          <td v-if="item.offer_type === 'buy'">{{ allStocks.find( element => (element.pk === item.stock) ).name }}</td>
+          <td v-else>{{ userStocks[item.stock].stock.name }} </td>
           <td>{{ item.unit_price }}</td>
           <td>{{ item.stock_amount }}</td>
           <td><button v-if="item.status === 1" @click="clickCancelOffer(item.pk, item.offer_type)" class="btn-danger">Cancel</button></td>
@@ -91,10 +92,10 @@ export default {
   methods: {
     ...mapActions(["getOffersAction", "getUserAction", "getUserStocksAction", "getStocksAction"]),
     onChange(){
-        console.log('Offer type selected: ', this.selectedOfferType);
+        //console.log('Offer type selected: ', this.selectedOfferType);
     },
     onChangeStock(){
-        console.log('Stock selected: ', this.selectedStock);
+        //console.log('Stock selected: ', this.selectedStock);
     },
     onChangePage(pageOfItems) {
       this.pageOfOffers = pageOfItems;
@@ -108,10 +109,9 @@ export default {
     },
     submit(e) {
         if (this.selectedOfferType == 1) {
-            console.log('Buy Offer');
+            //console.log('Buy Offer');
             e.preventDefault();
             let currentObj = this;
-            console.log('unit_price - ' + this.edt_unit_price);
             this.axios({ method: 'post', url: 'buyoffer/', 
             data: {
               stock: this.allStocks[this.selectedStock].pk,
@@ -121,7 +121,6 @@ export default {
             headers: { Authorization: 'Bearer ' + localStorage.token } })
             .then(function (response) {
                 currentObj.output = response.data;
-                console.log('Buy Offer added sucessfully');
                 location.reload();
                 confirm('Buy Offer added successfully');
               
@@ -131,10 +130,9 @@ export default {
             });
             
         } else {
-            console.log('Sell Offer');
+            //console.log('Sell Offer');
             e.preventDefault();
             let currentObj = this;
-            console.log('unit_price - ' + this.edt_unit_price);
             this.axios({ method: 'post', url: 'selloffer/', 
             data: {
               user_stock: this.userStocks[this.selectedStock].pk,
@@ -144,7 +142,6 @@ export default {
             headers: { Authorization: 'Bearer ' + localStorage.token } })
             .then(function (response) {
                 currentObj.output = response.data;
-                console.log('Sell Offer added sucessfully');
                 location.reload();
                 confirm('Sell Offer added successfully');
             })
@@ -155,7 +152,6 @@ export default {
     },
     clickCancelOffer(par_pk, par_type) {
         if(par_type === 'buy'){
-          console.log('BuyOffer cancellation attempt - ', par_pk)
           let currentObj = this;
           let url = 'buyoffer/' + par_pk;
 
@@ -166,7 +162,6 @@ export default {
           headers: { Authorization: 'Bearer ' + localStorage.token } })
           .then(function (response) {
               currentObj.output = response.data;
-              console.log('Buy Offer cancelled sucessfully');
               location.reload();
               confirm('Buy Offer cancelled successfully'); 
           })
@@ -175,7 +170,6 @@ export default {
           });
 
         }else{
-          console.log('SellOffer cancellation attempt - ', par_pk)
           let currentObj = this;
           let url = 'selloffer/' + par_pk;
 
@@ -186,7 +180,6 @@ export default {
           headers: { Authorization: 'Bearer ' + localStorage.token } })
           .then(function (response) {
               currentObj.output = response.data;
-              console.log('Sell Offer cancelled sucessfully');
               location.reload();
               confirm('Sell Offer cancelled successfully'); 
           })
