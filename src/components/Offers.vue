@@ -35,31 +35,40 @@
           </div>
         </div>
       </form>
-      
-      <div class="table-responsive">
+      <loading :active.sync="isComputing" :is-full-page="false"/> 
+      <template v-if="!getOffers">
+        <h3 v-if="!isComputing">Oops... something went wrong!</h3>
+      </template>
+      <template v-else>
+        <div class="table-responsive">
         <table class="table table-hover">
-          <thead>
-          <tr>
-            <th scope="col">Date</th>
-            <th scope="col">Offer Type</th>
-            <th scope="col">Status</th>
-            <th scope="col">Stock Name</th>
-            <th scope="col">Unit Price</th>
-            <th scope="col">Amount</th>
-          </tr>
-          </thead>
-          <tbody>
-          <tr v-for="item in BuyOffers.items" :key="item.id">
-            <td>{{ item.date }}</td>
-            <td>{{ item.type }}</td>
-            <td>{{ item.status }}</td>
-            <td>{{ item.stock }}</td>
-            <td>{{ item.unit_price }}</td>
-            <td>{{ item.stock_amount }}</td>
-          </tr>
-          </tbody>
-        </table>
+        <thead>
+        <tr>
+          <th scope="col">Date</th>
+          <th scope="col">Type</th>
+          <th scope="col">Status</th>
+          <th scope="col">Stock Name</th>
+          <th scope="col">Unit Price</th>
+          <th scope="col">Amount</th>
+          <th scope="col">Manage</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr v-for="item in pageOfOffers" :key="item.id">
+          <td>{{ item.created }}</td>
+          <td>{{ item.offer_type }}</td>
+          <td>{{ item.status_name }}</td>
+          <td>{{ allStocks.find(element => (element.pk === item.stock)).name}}</td>
+          <td>{{ item.unit_price }}</td>
+          <td>{{ item.stock_amount }}</td>
+          <td><button v-if="item.status === 1" @click="clickCancelOffer(item.pk, item.offer_type)" class="btn-danger">Cancel</button></td>
+        </tr>
+        </tbody>
+      </table>
       </div>
+      <hr>
+        <jw-pagination :items="getOffers" @changePage="onChangePage"/>
+      </template>
     </div>
   </div>
 </template>
@@ -70,88 +79,32 @@ import {mapGetters, mapActions} from "vuex";
 export default {
     data() {
     return {
+      isComputing: false,
+      pageOfOffers: null,
       selectedOfferType : 1,
       selectedStock: 1,
       userStocks: null,
       edt_unit_price: 0.01,
-      edt_amount: 1,
-      BuyOffers: {
-        items: [
-          {
-            "date": "2020-10-23 10:30:52",
-            "type":"buy",
-            "status":"open",
-            "stock": "Dummy Stock",
-            "unit_price": 100.00,
-            "stock_amount": 10
-          },
-          {
-            "date": "2020-10-22 10:30:52",
-            "type":"buy",  
-            "status":"open",
-            "stock": "Dummy Stock",
-            "unit_price": 179.00,
-            "stock_amount": 10
-          },
-          {
-            "date": "2020-10-21 10:30:52",
-            "type":"sell",
-            "status":"open",
-            "stock": "Dummy Stock",
-            "unit_price": 45.00,
-            "stock_amount": 20
-          },
-          {
-            "date": "2020-10-21 10:30:52",
-            "type":"buy",   
-            "status":"expired",
-            "stock": "Dummy Stock",
-            "unit_price": 191.00,
-            "stock_amount": 120
-          },
-          {
-            "date": "2020-10-20 10:30:52",
-            "type":"buy", 
-            "status":"closed",
-            "stock": "Dummy Stock",
-            "unit_price": 45.00,
-            "stock_amount": 5
-          },
-          {
-            "date": "2020-10-20 13:30:02",
-            "type":"buy", 
-            "status":"closed",
-            "stock": "Dummy Stock",
-            "unit_price": 15.00,
-            "stock_amount": 10
-          },
-          {
-            "date": "2020-10-20 11:30:52",
-            "type":"buy", 
-            "status":"buy",
-            "stock": "Dummy Stock",
-            "unit_price": 10.00,
-            "stock_amount": 30
-          },
-          {
-            "date": "2020-10-20 12:30:52",
-            "type":"buy", 
-            "status":"buy",
-            "stock": "Dummy Stock",
-            "unit_price": 15.00,
-            "stock_amount": 10
-          }
-        ]
-      }
+      edt_amount: 1
     }
   },
   methods: {
-    ...mapActions(["getUserAction", "getUserStocksAction", "getStocksAction"]),
+    ...mapActions(["getOffersAction", "getUserAction", "getUserStocksAction", "getStocksAction"]),
     onChange(){
         console.log('Offer type selected: ', this.selectedOfferType);
     },
     onChangeStock(){
         console.log('Stock selected: ', this.selectedStock);
+    },
+    onChangePage(pageOfItems) {
+      this.pageOfOffers = pageOfItems;
+    },
+    formatFields(item) {
+      const date = item.created.split('T')
+      const time = date[1].split('.')
+      item.created = date[0] + " " + time[0];
+      const STATUS_TYPES = ['open','expired','closed']
+      item.status_name = STATUS_TYPES[(item.status-1)];
     },
     submit(e) {
         if (this.selectedOfferType == 1) {
@@ -159,7 +112,7 @@ export default {
             e.preventDefault();
             let currentObj = this;
             console.log('unit_price - ' + this.edt_unit_price);
-            this.axios({ method: 'post', url: 'buyoffer', 
+            this.axios({ method: 'post', url: 'buyoffer/', 
             data: {
               stock: this.allStocks[this.selectedStock].pk,
               unit_price : this.edt_unit_price,
@@ -169,6 +122,7 @@ export default {
             .then(function (response) {
                 currentObj.output = response.data;
                 console.log('Buy Offer added sucessfully');
+                location.reload();
                 confirm('Buy Offer added successfully');
               
             })
@@ -181,7 +135,7 @@ export default {
             e.preventDefault();
             let currentObj = this;
             console.log('unit_price - ' + this.edt_unit_price);
-            this.axios({ method: 'post', url: 'selloffer', 
+            this.axios({ method: 'post', url: 'selloffer/', 
             data: {
               user_stock: this.userStocks[this.selectedStock].pk,
               unit_price : this.edt_unit_price,
@@ -191,20 +145,67 @@ export default {
             .then(function (response) {
                 currentObj.output = response.data;
                 console.log('Sell Offer added sucessfully');
+                location.reload();
                 confirm('Sell Offer added successfully');
             })
             .catch(function (error) {
               currentObj.output = error;
             });
         }
-    }
+    },
+    clickCancelOffer(par_pk, par_type) {
+        if(par_type === 'buy'){
+          console.log('BuyOffer cancellation attempt - ', par_pk)
+          let currentObj = this;
+          let url = 'buyoffer/' + par_pk;
+
+          this.axios({ method: 'delete', url, 
+          data: {
+            id: par_pk
+          },
+          headers: { Authorization: 'Bearer ' + localStorage.token } })
+          .then(function (response) {
+              currentObj.output = response.data;
+              console.log('Buy Offer cancelled sucessfully');
+              location.reload();
+              confirm('Buy Offer cancelled successfully'); 
+          })
+          .catch(function (error) {
+            currentObj.output = error;
+          });
+
+        }else{
+          console.log('SellOffer cancellation attempt - ', par_pk)
+          let currentObj = this;
+          let url = 'selloffer/' + par_pk;
+
+          this.axios({ method: 'delete', url, 
+          data: {
+            id: par_pk
+          },
+          headers: { Authorization: 'Bearer ' + localStorage.token } })
+          .then(function (response) {
+              currentObj.output = response.data;
+              console.log('Sell Offer cancelled sucessfully');
+              location.reload();
+              confirm('Sell Offer cancelled successfully'); 
+          })
+          .catch(function (error) {
+            currentObj.output = error;
+          });
+        }
+    },
   },
-    computed: mapGetters(["getUser", "allStocks", "allUserStocks"]),
+    computed: mapGetters(["getOffers", "getUser", "allStocks", "allUserStocks"]),
     async created() {
         this.user = await this.getUserAction();
         await this.getUserStocksAction();
         this.userStocks = this.allUserStocks;
         await this.getStocksAction();
+        this.isComputing = true;
+        await this.getOffersAction();
+        this.getOffers.forEach(this.formatFields)
+        this.isComputing = false;
     },
     validations: {
         edt_unit_price:{
