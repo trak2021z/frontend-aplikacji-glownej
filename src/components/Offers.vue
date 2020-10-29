@@ -122,6 +122,7 @@ export default {
             .then(function (response) {
                 currentObj.output = response.data;
                 console.log('Buy Offer added sucessfully');
+                location.reload();
                 confirm('Buy Offer added successfully');
               
             })
@@ -144,6 +145,7 @@ export default {
             .then(function (response) {
                 currentObj.output = response.data;
                 console.log('Sell Offer added sucessfully');
+                location.reload();
                 confirm('Sell Offer added successfully');
             })
             .catch(function (error) {
