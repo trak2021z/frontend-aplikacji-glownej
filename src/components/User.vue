@@ -65,9 +65,8 @@ export default {
       this.isSellAction = isSell;
       this.isBuySellModalVisible = true;
     },
-    async closeModal(){
+    closeModal(){
       this.isBuySellModalVisible = false;
-      await this.getUserAction();
     },
     onChangePage(pageOfItems){
       this.pageOfUserStocks = pageOfItems;

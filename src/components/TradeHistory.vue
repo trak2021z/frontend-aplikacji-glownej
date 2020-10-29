@@ -1,6 +1,6 @@
 <template>
   <div class="main-container">
-    <div class="main-table">
+    <div class="vld-parent main-table">
       <h2>Trades History</h2>
 
       <loading :active.sync="isComputing" :is-full-page="false"/>
@@ -80,6 +80,7 @@ export default {
     this.isComputing = true;
     await this.getTransactionsAction();
     this.getTransactions.forEach(this.formatDate)
+    this.getTransactions.reverse();
     this.isComputing = false;
   }
 }
