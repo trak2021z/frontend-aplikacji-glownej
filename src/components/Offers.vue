@@ -58,7 +58,7 @@
           <td>{{ item.created }}</td>
           <td>{{ item.offer_type }}</td>
           <td>{{ item.status_name }}</td>
-          <td>{{ allStocks[item.stock].name }}</td>
+          <td>{{ allStocks.find(element => (element.pk === item.stock)).name}}</td>
           <td>{{ item.unit_price }}</td>
           <td>{{ item.stock_amount }}</td>
           <td><button v-if="item.status === 1" @click="clickCancelOffer(item.pk, item.offer_type)" class="btn-danger">Cancel</button></td>
