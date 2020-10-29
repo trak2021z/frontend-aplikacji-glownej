@@ -30,6 +30,7 @@ const actions = {
     async buyStock({commit}, {stockId, quantity}) {
         return axios.post( `stocks/${stockId}/buy/`, {quantity: quantity}, {headers: authHeader()})
             .then(response => {
+                this.dispatch('getUserAction');
                 commit('updateUserStocks', response.data);
                 commit('updateStocks', response.data.stock);
                 return response;
@@ -41,6 +42,7 @@ const actions = {
     async sellStock({commit}, {userStockId, quantity}) {
         return axios.post( `user/stocks/${userStockId}/sell/`, {quantity: quantity}, {headers: authHeader()})
             .then(response => {
+                this.dispatch('getUserAction');
                 commit('updateUserStocks', response.data);
                 commit('updateStocks', response.data.stock);
                 return response;
