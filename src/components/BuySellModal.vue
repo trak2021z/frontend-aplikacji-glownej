@@ -79,9 +79,10 @@ export default {
       jQuery('#modalBuySellStock').modal()
     },
     hide() {
-      this.quantity = "";
       this.$emit('hide');
       jQuery('#modalBuySellStock').modal('hide');
+      this.quantity = "";
+      this.$v.$reset();
     },
     performTransaction(e) {
         this.$v.$touch();

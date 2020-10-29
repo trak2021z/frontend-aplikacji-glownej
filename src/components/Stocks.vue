@@ -12,27 +12,30 @@
       <template v-else>
         <buy-sell-modal :is-visible="isBuySellModalVisible" :is-sell="isSellAction" :stock-row="selectedStock" @hide="closeModal"/>
 
-        <table class="table table-hover">
-          <thead>
-          <tr>
-            <th scope="col">Stock</th>
-            <th scope="col">Company</th>
-            <th scope="col">Amount</th>
-            <th scope="col">Price</th>
-            <th scope="col">Buy/Sell</th>
-          </tr>
-          </thead>
-          <tbody>
-          <stock-row
-              v-for="stock in pageOfStocks" :key="stock.pk"
-              :stock="stock"
-              :is-user-stock="false"
-              @stock-clicked="showBuySellModal"
-          />
-          </tbody>
-        </table>
+        <div class="table-responsive">
+          <table class="table table-hover">
+            <thead>
+            <tr>
+              <th scope="col">Stock</th>
+              <th scope="col">Company</th>
+              <th scope="col">Amount</th>
+              <th scope="col">Price</th>
+              <th scope="col">Buy/Sell</th>
+            </tr>
+            </thead>
+            <tbody>
+            <stock-row
+                v-for="stock in pageOfStocks" :key="stock.pk"
+                :stock="stock"
+                :is-user-stock="false"
+                @stock-clicked="showBuySellModal"
+            />
+            </tbody>
+          </table>
+        </div>
+
         <hr>
-        <jw-pagination :items="allStocks" @changePage="onChangePage" />
+        <jw-pagination :items="allStocks" :maxPages="4" :labels="customLabels" @changePage="onChangePage"/>
       </template>
 
     </div>
@@ -46,7 +49,7 @@ import BuySellModal from "@/components/BuySellModal";
 
 export default {
   name: "Stocks",
-  computed: mapGetters(['allStocks']),
+  computed: mapGetters(['allStocks', 'customLabels']),
   components: {BuySellModal, StockRow},
   data(){
     return{

@@ -11,19 +11,19 @@
           <ul class="navbar-nav">
             <template v-if="$store.getters.isAuthenticated">
               <li :class="{'nav-item':this.currentPage !== 'stocks', 'nav-item active':this.currentPage === 'stocks' }">
-                <router-link class="nav-link" to="/stocks">Stocks</router-link>
+                <router-link class="nav-link" to="/stocks" data-toggle="collapse" data-target=".navbar-collapse.show">Stocks</router-link>
               </li>
               <li :class="{'nav-item':this.currentPage !== 'companies', 'nav-item active':this.currentPage === 'companies' }">
-                <router-link class="nav-link" to="/companies">Companies</router-link>
+                <router-link class="nav-link" to="/companies" data-toggle="collapse" data-target=".navbar-collapse.show">Companies</router-link>
               </li>
               <li :class="{'nav-item':this.currentPage !== 'user', 'nav-item active':this.currentPage === 'user' }">
-                <router-link class="nav-link" to="/user">Profile</router-link>
+                <router-link class="nav-link" to="/user" data-toggle="collapse" data-target=".navbar-collapse.show">Profile</router-link>
               </li>
               <li :class="{'nav-item':this.currentPage !== 'tradesHistory', 'nav-item active':this.currentPage === 'tradesHistory' }">
-                <router-link class="nav-link" to="/trades/history">Trades History</router-link>
+                <router-link class="nav-link" to="/trades/history" data-toggle="collapse" data-target=".navbar-collapse.show">Trades History</router-link>
               </li>
               <li :class="{'nav-item':this.currentPage !== 'offers', 'nav-item active':this.currentPage === 'offers' }">
-                <router-link class="nav-link" to="/offers">Offers</router-link>
+                <router-link class="nav-link" to="/offers" data-toggle="collapse" data-target=".navbar-collapse.show">Offers</router-link>
               </li>
             </template>
           </ul>

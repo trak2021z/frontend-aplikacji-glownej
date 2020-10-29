@@ -35,12 +35,12 @@
           </div>
         </div>
       </form>
-
       <loading :active.sync="isComputing" :is-full-page="false"/> 
       <template v-if="!getOffers">
         <h3 v-if="!isComputing">Oops... something went wrong!</h3>
       </template>
       <template v-else>
+        <div class="table-responsive">
         <table class="table table-hover">
         <thead>
         <tr>
@@ -65,10 +65,10 @@
         </tr>
         </tbody>
       </table>
+      </div>
       <hr>
         <jw-pagination :items="getOffers" @changePage="onChangePage"/>
       </template>
-
     </div>
   </div>
 </template>
