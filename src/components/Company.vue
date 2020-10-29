@@ -25,19 +25,20 @@
         </tbody>
       </table>
       <hr>
-      <jw-pagination v-if="companyStocks" :items="companyStocks" @changePage="onChangePage" />
+      <jw-pagination v-if="companyStocks" :items="companyStocks" :maxPages="4" :labels="customLabels" @changePage="onChangePage" />
     </div>
   </div>
 </template>
 
 <script>
-import {mapActions} from "vuex";
+import {mapActions, mapGetters} from "vuex";
 import StockRow from "@/components/StockRow";
 import BuySellModal from "@/components/BuySellModal";
 
 export default {
   name: "Company",
   components: {StockRow, BuySellModal},
+  computed: mapGetters(['customLabels']),
   data() {
     return {
       company: null,

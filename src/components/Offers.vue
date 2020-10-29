@@ -36,28 +36,30 @@
         </div>
       </form>
       
-      <table class="table table-hover">
-        <thead>
-        <tr>
-          <th scope="col">Date</th>
-          <th scope="col">Offer Type</th>
-          <th scope="col">Status</th>
-          <th scope="col">Stock Name</th>
-          <th scope="col">Unit Price</th>
-          <th scope="col">Amount</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr v-for="item in BuyOffers.items" :key="item.id">
-          <td>{{ item.date }}</td>
-          <td>{{ item.type }}</td>
-          <td>{{ item.status }}</td>
-          <td>{{ item.stock }}</td>
-          <td>{{ item.unit_price }}</td>
-          <td>{{ item.stock_amount }}</td>
-        </tr>
-        </tbody>
-      </table>
+      <div class="table-responsive">
+        <table class="table table-hover">
+          <thead>
+          <tr>
+            <th scope="col">Date</th>
+            <th scope="col">Offer Type</th>
+            <th scope="col">Status</th>
+            <th scope="col">Stock Name</th>
+            <th scope="col">Unit Price</th>
+            <th scope="col">Amount</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr v-for="item in BuyOffers.items" :key="item.id">
+            <td>{{ item.date }}</td>
+            <td>{{ item.type }}</td>
+            <td>{{ item.status }}</td>
+            <td>{{ item.stock }}</td>
+            <td>{{ item.unit_price }}</td>
+            <td>{{ item.stock_amount }}</td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
   </div>
 </template>

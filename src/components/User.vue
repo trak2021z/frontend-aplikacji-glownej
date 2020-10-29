@@ -13,28 +13,29 @@
         <p>Your balance: {{getUser.profile.balance}}</p>
 
         <buy-sell-modal :is-visible="isBuySellModalVisible" :is-sell="isSellAction" :stock-row="selectedStock" @hide="closeModal"/>
-
-        <table class="table table-hover">
-          <thead>
-          <tr>
-            <th scope="col">Stock</th>
-            <th scope="col">Company</th>
-            <th scope="col">Amount</th>
-            <th scope="col">Price</th>
-            <th scope="col">Buy/Sell</th>
-          </tr>
-          </thead>
-          <tbody>
-          <stock-row
-              v-for="userStock in pageOfUserStocks" :key="userStock.pk"
-              :stock="userStock"
-              :is-user-stock="true"
-              @stock-clicked="showBuySellModal"
-          />
-          </tbody>
-        </table>
+        <div class="table-responsive">
+          <table class="table table-hover">
+            <thead>
+            <tr>
+              <th scope="col">Stock</th>
+              <th scope="col">Company</th>
+              <th scope="col">Amount</th>
+              <th scope="col">Price</th>
+              <th scope="col">Buy/Sell</th>
+            </tr>
+            </thead>
+            <tbody>
+            <stock-row
+                v-for="userStock in pageOfUserStocks" :key="userStock.pk"
+                :stock="userStock"
+                :is-user-stock="true"
+                @stock-clicked="showBuySellModal"
+            />
+            </tbody>
+          </table>
+        </div>
         <hr>
-        <jw-pagination :items="allUserStocks" @changePage="onChangePage" />
+        <jw-pagination :items="allUserStocks" :maxPages="4" :labels="customLabels" @changePage="onChangePage" />
       </template>
 
     </div>
@@ -72,7 +73,7 @@ export default {
       this.pageOfUserStocks = pageOfItems;
     }
   },
-  computed: mapGetters(["getUser", "allUserStocks"]),
+  computed: mapGetters(["getUser", "allUserStocks", 'customLabels']),
   async created() {
     this.isComputing = true;
     this.user = await this.getUserAction();

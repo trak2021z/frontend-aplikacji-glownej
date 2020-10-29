@@ -10,43 +10,45 @@
       </template>
 
       <template v-else>
-        <table class="table table-hover">
-          <thead>
-          <tr>
-            <th scope="col">Type</th>
-            <th scope="col">Date</th>
-            <th scope="col">Company</th>
-            <th scope="col">Stock</th>
-            <th scope="col">From Offer</th>
-            <th scope="col">Unit Price</th>
-            <th scope="col">Amount</th>
-          </tr>
-          </thead>
-          <tbody>
-          <tr v-for="(item) in pageOfTransactions" :key="item.id">
-            <td>
-              <span v-if="(item.buy === null && item. sell === null && item.is_sell === true) || item.sell !== null">sell</span>
-              <span
-                  v-if="(item.buy === null && item. sell === null && item.is_sell === false) || item.buy !== null">buy</span>
-            </td>
-            <td>{{ item.date }}</td>
-            <td>
-              <router-link :to="'/company/' + item.stock.company.pk">{{ item.stock.company.name }}</router-link>
-            </td>
-            <td>
-              {{ item.stock.name }}
-            </td>
-            <td>
-              <font-awesome-icon v-if="item.buy !== null || item.sell !== null" icon="check"/>
-              <font-awesome-icon v-if="item.buy === null && item.sell === null" icon="times"/>
-            </td>
-            <td>{{ item.unit_price }}</td>
-            <td>{{ item.amount }}</td>
-          </tr>
-          </tbody>
-        </table>
+        <div class="table-responsive">
+          <table class="table table-hover">
+            <thead>
+            <tr>
+              <th scope="col">Type</th>
+              <th scope="col">Date</th>
+              <th scope="col">Company</th>
+              <th scope="col">Stock</th>
+              <th scope="col">From Offer</th>
+              <th scope="col">Unit Price</th>
+              <th scope="col">Amount</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr v-for="(item) in pageOfTransactions" :key="item.id">
+              <td>
+                <span v-if="(item.buy === null && item. sell === null && item.is_sell === true) || item.sell !== null">sell</span>
+                <span
+                    v-if="(item.buy === null && item. sell === null && item.is_sell === false) || item.buy !== null">buy</span>
+              </td>
+              <td>{{ item.date }}</td>
+              <td>
+                <router-link :to="'/company/' + item.stock.company.pk">{{ item.stock.company.name }}</router-link>
+              </td>
+              <td>
+                {{ item.stock.name }}
+              </td>
+              <td>
+                <font-awesome-icon v-if="item.buy !== null || item.sell !== null" icon="check"/>
+                <font-awesome-icon v-if="item.buy === null && item.sell === null" icon="times"/>
+              </td>
+              <td>{{ item.unit_price }}</td>
+              <td>{{ item.amount }}</td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
         <hr>
-        <jw-pagination :items="getTransactions" @changePage="onChangePage"/>
+        <jw-pagination :items="getTransactions" :maxPages="4" :labels="customLabels" @changePage="onChangePage"/>
       </template>
     </div>
   </div>
@@ -73,7 +75,7 @@ export default {
       item.date = date[0] + " " + time[0];
     }
   },
-  computed: mapGetters(["getTransactions"]),
+  computed: mapGetters(["getTransactions", "customLabels"]),
   async created() {
     this.isComputing = true;
     await this.getTransactionsAction();

@@ -10,26 +10,28 @@
       </template>
 
       <template v-else>
-        <table class="table table-hover">
-          <thead>
-          <tr>
-            <th scope="col">Company Name</th>
-            <th scope="col">Show Company</th>
-          </tr>
-          </thead>
-          <tbody>
-          <tr v-for="(company) in pageOfCompanies" :key="company.pk">
-            <td>{{ company.name }}</td>
-            <td>
-              <router-link :to="'/company/' + company.pk">
-                <font-awesome-icon icon="search-plus"/>
-              </router-link>
-            </td>
-          </tr>
-          </tbody>
-        </table>
+        <div class="table-responsive">
+          <table class="table table-hover">
+            <thead>
+            <tr>
+              <th scope="col">Company Name</th>
+              <th scope="col">Show Company</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr v-for="(company) in pageOfCompanies" :key="company.pk">
+              <td>{{ company.name }}</td>
+              <td>
+                <router-link :to="'/company/' + company.pk">
+                  <font-awesome-icon icon="search-plus"/>
+                </router-link>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
         <hr>
-        <jw-pagination :items="allCompanies" @changePage="onChangePage" />
+        <jw-pagination :items="allCompanies" :maxPages="4" :labels="customLabels" @changePage="onChangePage" />
       </template>
 
     </div>
@@ -41,7 +43,7 @@ import {mapActions, mapGetters} from "vuex";
 
 export default {
   name: "Companies",
-  computed: mapGetters(['allCompanies']),
+  computed: mapGetters(['allCompanies', 'customLabels']),
   data() {
     return {
       isComputing: false,
