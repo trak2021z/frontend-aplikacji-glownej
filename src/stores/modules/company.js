@@ -8,11 +8,14 @@ const state = {
 
 const actions = {
     async getCompanyAction({commit}, id) {
-        const response = await axios.get('company/' + id, {headers: authHeader()})
-
-        commit('setCompany', response.data);
-
-        return response.data;
+        return axios.get('company/' + id, {headers: authHeader()})
+            .then(response => {
+                commit('setCompany', response.data);
+                return response
+            })
+            .catch(error => {
+                return error.response
+            });
     },
     async getCompaniesAction({commit}) {
         return axios.get('company/', {headers: authHeader()})

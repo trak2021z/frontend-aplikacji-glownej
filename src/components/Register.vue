@@ -58,7 +58,7 @@
                                   :class="{'is-invalid':$v.password.$error, 'is-valid':!$v.password.$invalid }">
             <div class="invalid-feedback">
               <span v-if="!$v.password.required">Password required</span>
-              <span v-if="!$v.password.minLength">Password must be at least 6 characters</span>
+              <span v-if="!$v.password.minLength">Password must be at least 8 characters</span>
             </div>
           </div>
           <div class="col"><input type="password" class="form-control" name="confirm_password"
@@ -175,7 +175,7 @@ export default {
     },
     password: {
       required,
-      minLength: minLength(6)
+      minLength: minLength(8)
     },
     passwordConfirmation: {
       sameAsPassword: sameAs('password')

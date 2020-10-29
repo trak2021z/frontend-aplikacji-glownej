@@ -30,6 +30,7 @@ const actions = {
     async buyStock({commit}, {stockId, quantity}) {
         return axios.post( `stocks/${stockId}/buy/`, {quantity: quantity}, {headers: authHeader()})
             .then(response => {
+                this.dispatch('getUserAction');
                 commit('updateUserStocks', response.data);
                 commit('updateStocks', response.data.stock);
                 return response;
@@ -41,6 +42,7 @@ const actions = {
     async sellStock({commit}, {userStockId, quantity}) {
         return axios.post( `user/stocks/${userStockId}/sell/`, {quantity: quantity}, {headers: authHeader()})
             .then(response => {
+                this.dispatch('getUserAction');
                 commit('updateUserStocks', response.data);
                 commit('updateStocks', response.data.stock);
                 return response;
@@ -74,16 +76,16 @@ const mutations = {
     },
     updateUserStocks: (state, stockUpdate) => {
         if(state.userStocks){
-            const index = state.userStocks.findIndex(userStock => userStock.pk === stockUpdate.pk);
+            const index = state.userStocks.findIndex(userStock => userStock.stock.pk === stockUpdate.stock.pk);
 
             if(index > -1) {
-                state.userStocks.splice(index, 1, stockUpdate);
-            } else {
                 if(stockUpdate.stock_amount < 1){
                     state.userStocks.splice(index, 1);
                 } else {
-                    state.userStocks.push(stockUpdate);
+                    state.userStocks.splice(index, 1, stockUpdate);
                 }
+            } else {
+                    state.userStocks.push(stockUpdate);
             }
         }
     }

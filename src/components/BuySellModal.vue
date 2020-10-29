@@ -39,7 +39,11 @@
             </div>
           </div>
 
+          <h4 v-if="this.getUser" class="text-dark text-right">Your Balance: {{availableBalance}}</h4>
+
           <h4 class="text-dark text-right">Total: {{total}}</h4>
+
+          <h4 v-if="this.getUser" class="text-dark text-right">New Balance: {{newBalance}}</h4>
 
         </div>
         <div class="modal-footer d-flex justify-content-center">
@@ -59,6 +63,10 @@ window.$ = window.jQuery = jQuery;
 
 function userCanAfford (value){
   if(!this.isSell){
+    if (!this.getUser) {
+      return false;
+    }
+
     return this.getUser.profile.balance >= value * this.price;
   }
 
@@ -144,6 +152,12 @@ export default {
     },
     available_amount: function (){
       return this.isSell ? this.stockRow.owned_amount : this.stockRow.avail_amount;
+    },
+    availableBalance: function (){
+      return this.getUser.profile.balance;
+    },
+    newBalance: function (){
+      return (+this.getUser.profile.balance + +this.total).toFixed(2);
     },
     total: function (){
       let total = this.quantity * this.price;
