@@ -53,7 +53,7 @@
           <th scope="col">Stock Name</th>
           <th scope="col">Unit Price</th>
           <th scope="col">Amount</th>
-          <th scope="col">Manage</th>
+          <th scope="col">Cancel</th>
         </tr>
         </thead>
         <tbody>
@@ -62,8 +62,7 @@
           <td>{{ item.offer_type }}</td>
           <td>{{ item.status_name }}</td>
           <td v-if="item.offer_type === 'buy'">{{ allStocks.find( element => (element.pk === item.stock) ).name }}</td>
-          <td v-else-if="userStocks[item.stock]">{{ userStocks[item.stock].stock.name }} </td>
-          <td v-else>{{ allStocks.find( element => (element.pk === item.stock) ).name  }} </td>
+          <td v-else>{{ allUserStocks.find( element => (element.pk === item.stock)).stock.name  }} </td>
           <td>{{ item.unit_price }}</td>
           <td>{{ item.stock_amount }}</td>
           <td><button v-if="item.status === 1" v-on:click="clickCancelOffer(item.pk, item.offer_type)" class="btn-danger">Cancel</button></td>
@@ -143,22 +142,24 @@ export default {
             
         } else {
             //console.log('Sell Offer');
-          let par_stock = this.userStocks[this.selectedStock].pk;
-          let par_price = this.edt_unit_price;
-          let par_amount = this.edt_amount;
-          let data = {user_stock: par_stock, unit_price: par_price, stock_amount: par_amount};
+            if(this.userStocks[this.selectedStock].pk){
+              let par_stock = this.userStocks[this.selectedStock].pk;
+              let par_price = this.edt_unit_price;
+              let par_amount = this.edt_amount;
+              let data = {user_stock: par_stock, unit_price: par_price, stock_amount: par_amount};
 
-          this.addSellOfferAction(data).then(response => {
-              if(response.status === 200 || response.status === 201){
-                confirm(`You've made a sell offer for:  ${this.userStocks[this.selectedStock].name} in amount of ${this.edt_amount} for the price of ${this.edt_unit_price} each.`)
-                this.$v.$reset();
-                this.paginatorKey += 1;
-                location.reload();
-              } else {
-                alert(`${response.status}: ${response.data.error}`);
-              }
-            });
-          this.paginatorKey += 1;
+              this.addSellOfferAction(data).then(response => {
+                  if(response.status === 200 || response.status === 201){
+                    confirm(`You've made a sell offer in amount of ${this.edt_amount} for the price of ${this.edt_unit_price} each.`)
+                    this.$v.$reset();
+                    this.paginatorKey += 1;
+                    location.reload();
+                  } else {
+                    alert(`${response.status}: ${response.data.error}`);
+                  }
+                });
+              this.paginatorKey += 1;
+            }
         }
     },
     clickCancelOffer(par_pk, par_type) {
@@ -179,6 +180,7 @@ export default {
                 confirm(`Offer cancelled succesfully`)
                 this.$v.$reset();
                 this.paginatorKey += 1;
+                location.reload();
               } else {
                 alert(`${response.status}: ${response.data.error}`);
               }
@@ -188,7 +190,7 @@ export default {
     }
   },
     async created() {
-        this.user = await this.getUserAction();
+        //this.user = await this.getUserAction();
         await this.getUserStocksAction();
         this.userStocks = this.allUserStocks;
         await this.getStocksAction();
