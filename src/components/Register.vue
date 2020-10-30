@@ -186,10 +186,3 @@ export default {
   }
 }
 </script>
-
-<style>
-body {
-  color: #000;
-  background: #9fd98f !important;
-}
-</style>
