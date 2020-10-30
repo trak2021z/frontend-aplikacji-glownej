@@ -35,10 +35,13 @@
           </div>
         </div>
       </form>
+
       <loading :active.sync="isComputing" :is-full-page="false"/> 
+
       <template v-if="!getOffers">
         <h3 v-if="!isComputing">Oops... something went wrong!</h3>
       </template>
+
       <template v-else>
         <div class="table-responsive">
         <table class="table table-hover">
@@ -50,7 +53,7 @@
           <th scope="col">Stock Name</th>
           <th scope="col">Unit Price</th>
           <th scope="col">Amount</th>
-          <th scope="col">Manage</th>
+          <th scope="col">Cancel</th>
         </tr>
         </thead>
         <tbody>
@@ -58,16 +61,22 @@
           <td>{{ item.created }}</td>
           <td>{{ item.offer_type }}</td>
           <td>{{ item.status_name }}</td>
-          <td>{{ allStocks.find(element => (element.pk === item.stock)).name}}</td>
+          <td v-if="item.offer_type === 'buy'">{{ allStocks.find( element => (element.pk === item.stock) ).name }}</td>
+          <td v-else>{{ allUserStocks.find( element => (element.pk === item.stock)).stock.name  }} </td>
           <td>{{ item.unit_price }}</td>
           <td>{{ item.stock_amount }}</td>
-          <td><button v-if="item.status === 1" @click="clickCancelOffer(item.pk, item.offer_type)" class="btn-danger">Cancel</button></td>
+          <td><button v-if="item.status === 1" v-on:click="clickCancelOffer(item.pk, item.offer_type)" class="btn-danger">Cancel</button></td>
         </tr>
         </tbody>
       </table>
       </div>
       <hr>
-        <jw-pagination :items="getOffers" @changePage="onChangePage"/>
+      <paginator :items="getOffers"
+                  :maxPages="4"
+                  :initialPage="currentPage"
+                  :labels="customLabels"
+                  :key="paginatorKey"
+                  @changePage="onChangePage"/>
       </template>
     </div>
   </div>
@@ -76,11 +85,16 @@
 <script>
 import {integer, decimal} from "vuelidate/lib/validators";
 import {mapGetters, mapActions} from "vuex";
+import Paginator from "@/components/Paginator";
 export default {
+    computed: mapGetters(['customLabels', 'getOffers', 'getUser', 'allStocks', 'allUserStocks']),
+    components: {Paginator},
     data() {
     return {
       isComputing: false,
       pageOfOffers: null,
+      currentPage: 1,
+      paginatorKey: 0,
       selectedOfferType : 1,
       selectedStock: 1,
       userStocks: null,
@@ -89,14 +103,15 @@ export default {
     }
   },
   methods: {
-    ...mapActions(["getOffersAction", "getUserAction", "getUserStocksAction", "getStocksAction"]),
+    ...mapActions(["getOffersAction", "addBuyOfferAction", "addSellOfferAction", "deleteBuyOfferAction", "deleteSellOfferAction","getUserAction", "getUserStocksAction", "getStocksAction"]),
     onChange(){
-        console.log('Offer type selected: ', this.selectedOfferType);
+        //console.log('Offer type selected: ', this.selectedOfferType);
     },
     onChangeStock(){
-        console.log('Stock selected: ', this.selectedStock);
+        //console.log('Stock selected: ', this.selectedStock);
     },
-    onChangePage(pageOfItems) {
+    onChangePage(pageOfItems, page) {
+      this.currentPage = page;
       this.pageOfOffers = pageOfItems;
     },
     formatFields(item) {
@@ -106,105 +121,82 @@ export default {
       const STATUS_TYPES = ['open','expired','closed']
       item.status_name = STATUS_TYPES[(item.status-1)];
     },
-    submit(e) {
+    submit() {
         if (this.selectedOfferType == 1) {
-            console.log('Buy Offer');
-            e.preventDefault();
-            let currentObj = this;
-            console.log('unit_price - ' + this.edt_unit_price);
-            this.axios({ method: 'post', url: 'buyoffer/', 
-            data: {
-              stock: this.allStocks[this.selectedStock].pk,
-              unit_price : this.edt_unit_price,
-              stock_amount: this.edt_amount,
-            },
-            headers: { Authorization: 'Bearer ' + localStorage.token } })
-            .then(function (response) {
-                currentObj.output = response.data;
-                console.log('Buy Offer added sucessfully');
+            //console.log('Buy Offer');
+          let par_stock = this.allStocks[this.selectedStock].pk;
+          let par_price = this.edt_unit_price;
+          let par_amount = this.edt_amount;
+          let data = {stock: par_stock, unit_price: par_price, stock_amount: par_amount};
+
+          this.addBuyOfferAction(data).then(response => {
+              if(response.status === 200 || response.status === 201){
+                confirm(`You've made a buy offer for:  ${this.allStocks[this.selectedStock].name} in amount of ${this.edt_amount} for the price of ${this.edt_unit_price} each.`)
+                this.$v.$reset();
+                this.paginatorKey += 1;
                 location.reload();
-                confirm('Buy Offer added successfully');
-              
-            })
-            .catch(function (error) {
-              currentObj.output = error;
+              } else {
+                alert(`${response.status}: ${response.data.error}`);
+              }
             });
             
         } else {
-            console.log('Sell Offer');
-            e.preventDefault();
-            let currentObj = this;
-            console.log('unit_price - ' + this.edt_unit_price);
-            this.axios({ method: 'post', url: 'selloffer/', 
-            data: {
-              user_stock: this.userStocks[this.selectedStock].pk,
-              unit_price : this.edt_unit_price,
-              stock_amount: this.edt_amount,
-            },
-            headers: { Authorization: 'Bearer ' + localStorage.token } })
-            .then(function (response) {
-                currentObj.output = response.data;
-                console.log('Sell Offer added sucessfully');
-                location.reload();
-                confirm('Sell Offer added successfully');
-            })
-            .catch(function (error) {
-              currentObj.output = error;
-            });
+            //console.log('Sell Offer');
+            if(this.userStocks[this.selectedStock].pk){
+              let par_stock = this.userStocks[this.selectedStock].pk;
+              let par_price = this.edt_unit_price;
+              let par_amount = this.edt_amount;
+              let data = {user_stock: par_stock, unit_price: par_price, stock_amount: par_amount};
+
+              this.addSellOfferAction(data).then(response => {
+                  if(response.status === 200 || response.status === 201){
+                    confirm(`You've made a sell offer in amount of ${this.edt_amount} for the price of ${this.edt_unit_price} each.`)
+                    this.$v.$reset();
+                    this.paginatorKey += 1;
+                    location.reload();
+                  } else {
+                    alert(`${response.status}: ${response.data.error}`);
+                  }
+                });
+              this.paginatorKey += 1;
+            }
         }
     },
     clickCancelOffer(par_pk, par_type) {
         if(par_type === 'buy'){
-          console.log('BuyOffer cancellation attempt - ', par_pk)
-          let currentObj = this;
-          let url = 'buyoffer/' + par_pk;
-
-          this.axios({ method: 'delete', url, 
-          data: {
-            id: par_pk
-          },
-          headers: { Authorization: 'Bearer ' + localStorage.token } })
-          .then(function (response) {
-              currentObj.output = response.data;
-              console.log('Buy Offer cancelled sucessfully');
-              location.reload();
-              confirm('Buy Offer cancelled successfully'); 
-          })
-          .catch(function (error) {
-            currentObj.output = error;
-          });
-
+          this.deleteBuyOfferAction(par_pk).then(response => {
+              if(response.status === 200 || response.status === 201){
+                confirm(`Offer cancelled succesfully`)
+                this.$v.$reset();
+                this.paginatorKey += 1;
+              } else {
+                alert(`${response.status}: ${response.data.error}`);
+              }
+            });
+          this.paginatorKey += 1;
         }else{
-          console.log('SellOffer cancellation attempt - ', par_pk)
-          let currentObj = this;
-          let url = 'selloffer/' + par_pk;
-
-          this.axios({ method: 'delete', url, 
-          data: {
-            id: par_pk
-          },
-          headers: { Authorization: 'Bearer ' + localStorage.token } })
-          .then(function (response) {
-              currentObj.output = response.data;
-              console.log('Sell Offer cancelled sucessfully');
-              location.reload();
-              confirm('Sell Offer cancelled successfully'); 
-          })
-          .catch(function (error) {
-            currentObj.output = error;
-          });
+          this.deleteSellOfferAction(par_pk).then(response => {
+              if(response.status === 200 || response.status === 201){
+                confirm(`Offer cancelled succesfully`)
+                this.$v.$reset();
+                this.paginatorKey += 1;
+                location.reload();
+              } else {
+                alert(`${response.status}: ${response.data.error}`);
+              }
+            });
+          this.paginatorKey += 1;
         }
-    },
+    }
   },
-    computed: mapGetters(["getOffers", "getUser", "allStocks", "allUserStocks"]),
     async created() {
-        this.user = await this.getUserAction();
+        //this.user = await this.getUserAction();
         await this.getUserStocksAction();
         this.userStocks = this.allUserStocks;
         await this.getStocksAction();
         this.isComputing = true;
         await this.getOffersAction();
-        this.getOffers.forEach(this.formatFields)
+        this.getOffers.forEach(this.formatFields);
         this.isComputing = false;
     },
     validations: {

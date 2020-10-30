@@ -8,6 +8,7 @@ const state = {
 }
 
 const actions = {
+    //GET
     async getOffersAction({commit}) {
         const response = await axios.get('user/offers/', {headers: authHeader()})
 
@@ -24,10 +25,75 @@ const actions = {
         });
         offers_all.sort(function(a,b) {return (a.created > b.created) ? 1 : ((b.created > a.created) ? -1 : 0);} );
         offers_all.reverse();
+        this.dispatch('getUserAction');
+        this.dispatch('getUserStocksAction');
         commit('setOffers', offers_all);
 
         return response.data;
-    }
+    },
+    //POST
+    async addBuyOfferAction({ commit }, data) {
+        const response = await axios.post(`buyoffer/`, 
+        {stock:data.stock, unit_price:data.unit_price, stock_amount:data.stock_amount}, 
+        {headers: authHeader()});
+        let offer = response.data;
+        offer.offer_type = 'buy';
+
+        const date = offer.created.split('T')
+        const time = date[1].split('.')
+        offer.created = date[0] + " " + time[0];
+        const STATUS_TYPES = ['open','expired','closed']
+        offer.status_name = STATUS_TYPES[(offer.status-1)];
+        commit('updateOffers', offer);
+
+        return response;
+    },
+    async addSellOfferAction({ commit }, data) {
+        const response = await axios.post(`selloffer/`, 
+        {user_stock:data.user_stock, unit_price:data.unit_price, stock_amount:data.stock_amount}, 
+        {headers: authHeader()});
+        
+        let offer = response.data;
+        offer.offer_type = 'sell';
+
+        const date = offer.created.split('T')
+        const time = date[1].split('.')
+        offer.created = date[0] + " " + time[0];
+        const STATUS_TYPES = ['open','expired','closed']
+        offer.status_name = STATUS_TYPES[(offer.status-1)];
+        commit('updateOffers', offer);
+
+        return response;
+    },
+    //DELETE
+    async deleteBuyOfferAction({ commit }, id) {
+        const response = await axios.delete(`buyoffer/${id}`, {headers: authHeader()});
+        let offer = response.data;
+        offer.offer_type = 'buy';
+
+        const date = offer.created.split('T')
+        const time = date[1].split('.')
+        offer.created = date[0] + " " + time[0];
+        const STATUS_TYPES = ['open','expired','closed']
+        offer.status_name = STATUS_TYPES[(offer.status-1)];
+        commit('updateOffers', offer);
+
+        return response;
+    },
+    async deleteSellOfferAction({ commit }, id) {
+        const response = await axios.delete(`selloffer/${id}`, {headers: authHeader()});
+        let offer = response.data;
+        offer.offer_type = 'sell';
+
+        const date = offer.created.split('T')
+        const time = date[1].split('.')
+        offer.created = date[0] + " " + time[0];
+        const STATUS_TYPES = ['open','expired','closed']
+        offer.status_name = STATUS_TYPES[(offer.status-1)];
+        commit('updateOffers', offer);
+
+        return response;
+    },
 }
 
 const getters = {
@@ -51,6 +117,24 @@ const mutations = {
     },
     setSellOffers: (state, sell_offers) => {
         state.sell_offers = sell_offers;
+    },
+    removeBuyOffers: (state, id) =>{
+        state.buy_offers = state.buy_offers.filter(buy_offers => buy_offers.pk !== id);
+    },
+    removeSellOffers: (state, id) =>{
+        state.sell_offers = state.sell_offers.filter(sell_offers => sell_offers.pk !== id);
+    },
+    removeOffers: (state, id) => {
+        state.offers = state.offers.filter(offers => offers.pk != id);
+    },
+    updateOffers: (state, updatedOffer) => {
+        if(state.offers){
+            const index = state.offers.findIndex(offer => offer.pk === updatedOffer.pk);
+
+            if(index > -1) {
+                state.offers.splice(index, 1, updatedOffer);
+            }
+        }
     },
 }
 
