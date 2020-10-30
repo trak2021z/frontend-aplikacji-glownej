@@ -54,7 +54,7 @@
       <loading :active.sync="isComputing" :is-full-page="false"/> 
 
       <template v-if="!getOffers">
-        <h3 v-if="!isComputing">Oops... something went wrong!</h3>
+        <h3 v-if="!isComputing">Loading, please wait...</h3>
       </template>
 
       <template v-else>
@@ -150,7 +150,11 @@ export default {
       item.status_name = STATUS_TYPES[(item.status-1)];
     },
     submit() {
-        if (this.selectedOfferType == 1) {
+      this.$v.$touch();
+      if (this.$v.$invalid) {
+        alert('Fill all fields correctly before creating an offer')
+      } else {
+          if (this.selectedOfferType == 1) {
             //console.log('Buy Offer');
           let par_stock = this.allStocks[this.selectedStock].pk;
           let par_price = this.edt_unit_price;
@@ -204,6 +208,7 @@ export default {
               this.paginatorKey += 1;
             }
         }
+      }
     },
     clickCancelOffer(par_pk, par_type) {
         if(par_type === 'buy'){
