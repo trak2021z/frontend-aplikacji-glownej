@@ -24,11 +24,26 @@
           </div><br>
           <div class="row">
             <label for="edt_unit_price">Stock Price (per unit)</label>
-            <input type="number" name="edt_unit_price" v-model="edt_unit_price" @change="onChange" min="0.01" step="0.01" value="0.01" class="form-control" placeholder="0.01">
+            <input id='id_edt_unit_price' type="number" name="edt_unit_price" v-model="edt_unit_price" @change="onChange" min="0.01" step="0.01" value="0.01" class="form-control" placeholder="0.01"
+              v-model.trim="$v.edt_unit_price.$model"
+              :class="{'is-invalid':$v.edt_unit_price.$error, 'is-valid':!$v.edt_unit_price.$invalid }">
+              <div class="invalid-feedback">
+                <span v-if="!$v.edt_unit_price.required">Invalid stock price</span>
+                <span v-if="!$v.edt_unit_price.decimal">Unit price must be a decimal number</span>
+                <span v-if="!$v.edt_unit_price.minValue">Unit price must be at least 0.01</span>
+            </div>
           </div><br>
           <div class="row">
             <label for="edt_amount">Stock Amount</label>
-            <input type="number" name="edt_amount" v-model="edt_amount" @change="onChange" min="1" value="1" class="form-control" placeholder="1">
+            <input id='id_edt_amount' type="number" name="edt_amount" v-model="edt_amount" @change="onChange" min="1" value="1" class="form-control" placeholder="1"
+            v-model.trim="$v.edt_amount.$model"
+              :class="{'is-invalid':$v.edt_amount.$error, 'is-valid':!$v.edt_amount.$invalid }">
+              <div class="invalid-feedback">
+                <span v-if="!$v.edt_amount.required">Invalid amount</span>
+                <span v-if="!$v.edt_amount.integer">Stock amount must be an integer</span>
+                <span v-if="!$v.edt_amount.available_amount">Selected stock is not available in such amount</span>
+                <span v-if="!$v.edt_amount.minValue">Unit price must be a positive number</span>
+              </div>
           </div><br>
           <div class="row">
             <input @click="submit" type="button" class="btn btn-success btn-lg btn-block" value="Create Offer"/>
@@ -39,7 +54,7 @@
       <loading :active.sync="isComputing" :is-full-page="false"/> 
 
       <template v-if="!getOffers">
-        <h3 v-if="!isComputing">Oops... something went wrong!</h3>
+        <h3 v-if="!isComputing">Loading, please wait...</h3>
       </template>
 
       <template v-else>
@@ -83,11 +98,22 @@
 </template>
 
 <script>
-import {integer, decimal} from "vuelidate/lib/validators";
+import {required, decimal, integer, minValue} from "vuelidate/lib/validators";
 import {mapGetters, mapActions} from "vuex";
 import Paginator from "@/components/Paginator";
+
+function available_amount(value){
+  if(this.selectedOfferType == 1){
+    return value <= this.allStocks[this.selectedStock].avail_amount;
+  }else{
+    return value <= this.userStocks[this.selectedStock].stock_amount;
+  }
+}
+
 export default {
-    computed: mapGetters(['customLabels', 'getOffers', 'getUser', 'allStocks', 'allUserStocks']),
+    computed: { 
+      ...mapGetters(['customLabels', 'getOffers', 'getUser', 'allStocks', 'allUserStocks']),
+    },
     components: {Paginator},
     data() {
     return {
@@ -105,10 +131,12 @@ export default {
   methods: {
     ...mapActions(["getOffersAction", "addBuyOfferAction", "addSellOfferAction", "deleteBuyOfferAction", "deleteSellOfferAction","getUserAction", "getUserStocksAction", "getStocksAction"]),
     onChange(){
-        //console.log('Offer type selected: ', this.selectedOfferType);
+      //console.log('Offer type selected: ', this.selectedOfferType);
     },
     onChangeStock(){
-        //console.log('Stock selected: ', this.selectedStock);
+      //console.log('Stock selected: ', this.selectedStock);
+      //inputUnitPrice.setAttribute('value', this.allStocks[this.selectedStock].avail_amount);
+      //inputStockAmount.setAttribute('value', 1);
     },
     onChangePage(pageOfItems, page) {
       this.currentPage = page;
@@ -122,7 +150,11 @@ export default {
       item.status_name = STATUS_TYPES[(item.status-1)];
     },
     submit() {
-        if (this.selectedOfferType == 1) {
+      this.$v.$touch();
+      if (this.$v.$invalid) {
+        alert('Fill all fields correctly before creating an offer')
+      } else {
+          if (this.selectedOfferType == 1) {
             //console.log('Buy Offer');
           let par_stock = this.allStocks[this.selectedStock].pk;
           let par_price = this.edt_unit_price;
@@ -176,6 +208,7 @@ export default {
               this.paginatorKey += 1;
             }
         }
+      }
     },
     clickCancelOffer(par_pk, par_type) {
         if(par_type === 'buy'){
@@ -216,10 +249,15 @@ export default {
     },
     validations: {
         edt_unit_price:{
-            decimal
+          required,
+          decimal,
+          minValue: minValue(0.01)
         },
         edt_amount:{
-            integer
+          required,
+          integer,
+          minValue: minValue(1),
+          available_amount
         }
     }
 }
