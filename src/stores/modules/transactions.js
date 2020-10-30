@@ -7,7 +7,7 @@ const state = {
 
 const actions = {
     async getTransactionsAction({commit}) {
-        const response = await axios.get('transaction/', {headers: authHeader()})
+        const response = await axios.get('user/history', {headers: authHeader()})
 
         commit('setTransactions', response.data);
 
