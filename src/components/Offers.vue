@@ -129,7 +129,12 @@ export default {
           let par_amount = this.edt_amount;
           let data = {stock: par_stock, unit_price: par_price, stock_amount: par_amount};
 
-          this.addBuyOfferAction(data).then(response => {
+          let max_amount = this.allStocks[this.selectedStock].avail_amount;
+
+          if(par_amount > max_amount)
+            alert(`${'Insufficient amount of available stocks - there are only ' + max_amount + ' stocks of chosen type.'}`)
+          else{
+              this.addBuyOfferAction(data).then(response => {
               if(response.status === 200 || response.status === 201){
                 confirm(`You've made a buy offer for:  ${this.allStocks[this.selectedStock].name} in amount of ${this.edt_amount} for the price of ${this.edt_unit_price} each.`)
                 this.$v.$reset();
@@ -138,7 +143,10 @@ export default {
               } else {
                 alert(`${response.status}: ${response.data.error}`);
               }
-            });
+              }).catch(error => {
+                  alert(`${error}`)
+              });
+          }
             
         } else {
             //console.log('Sell Offer');
@@ -157,6 +165,13 @@ export default {
                   } else {
                     alert(`${response.status}: ${response.data.error}`);
                   }
+                }).catch(error => {
+                  let max_amount = this.userStocks[this.selectedStock].stock_amount;
+                  //console.log('Wpisany amount' + par_amount + ", zupa: " + )
+                  if(par_amount > max_amount)
+                    alert(`${'Insufficient amount of stocks - you only have ' + max_amount + ' stocks of chosen type.'}`)
+                  else
+                    alert(`${error}`)
                 });
               this.paginatorKey += 1;
             }
