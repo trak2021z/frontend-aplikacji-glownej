@@ -23,10 +23,11 @@
             </div>
           </div><br>
           <div class="row">
-            <label for="edt_unit_price">Stock Price (per unit)</label>
-            <input id='id_edt_unit_price' type="number" name="edt_unit_price" v-model="edt_unit_price" @change="onChange" min="0.01" step="0.01" value="0.01" class="form-control" placeholder="0.01"
-              v-model.trim="$v.edt_unit_price.$model"
-              :class="{'is-invalid':$v.edt_unit_price.$error, 'is-valid':!$v.edt_unit_price.$invalid }">
+            <label v-if="edt_unit_price != null" for="edt_unit_price">Stock Price (per unit)</label>
+            <input label="Stock Price (per unit)" id='id_edt_unit_price' type="number" name="edt_unit_price" v-model="edt_unit_price" @change="onChange" min="0.01" step="0.01" class="form-control"
+                  value=null placeholder="Stock Price (per unit)"
+                  v-model.trim="$v.edt_unit_price.$model"
+                  :class="{'is-invalid':$v.edt_unit_price.$error, 'is-valid':!$v.edt_unit_price.$invalid }">
               <div class="invalid-feedback">
                 <span v-if="!$v.edt_unit_price.required">Invalid stock price</span>
                 <span v-if="!$v.edt_unit_price.decimal">Unit price must be a decimal number</span>
@@ -34,9 +35,10 @@
             </div>
           </div><br>
           <div class="row">
-            <label for="edt_amount">Stock Amount</label>
-            <input id='id_edt_amount' type="number" name="edt_amount" v-model="edt_amount" @change="onChange" min="1" value="1" class="form-control" placeholder="1"
-            v-model.trim="$v.edt_amount.$model"
+            <label v-if="edt_amount != null" for="edt_amount">Stock Amount</label>
+            <input id='id_edt_amount' type="number" name="edt_amount" v-model="edt_amount" @change="onChange" min="1" class="form-control"
+              value=null placeholder="Stock Amount"
+              v-model.trim="$v.edt_amount.$model"
               :class="{'is-invalid':$v.edt_amount.$error, 'is-valid':!$v.edt_amount.$invalid }">
               <div class="invalid-feedback">
                 <span v-if="!$v.edt_amount.required">Invalid amount</span>
@@ -124,8 +126,8 @@ export default {
       selectedOfferType : 1,
       selectedStock: 1,
       userStocks: null,
-      edt_unit_price: 0.01,
-      edt_amount: 1
+      edt_unit_price: null,
+      edt_amount: null
     }
   },
   methods: {
@@ -241,6 +243,11 @@ export default {
         //this.user = await this.getUserAction();
         await this.getUserStocksAction();
         this.userStocks = this.allUserStocks;
+        this.userStocks = this.userStocks.filter(function( obj ) {
+            return obj.stock_amount > 0;
+        })
+        console.log(this.userStocks)
+
         await this.getStocksAction();
         this.isComputing = true;
         await this.getOffersAction();
