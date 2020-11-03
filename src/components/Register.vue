@@ -79,6 +79,8 @@
                :class="{'is-invalid':$v.creditCard.$error, 'is-valid':!$v.creditCard.$invalid }">
         <div class="invalid-feedback">
           <span v-if="!$v.creditCard.required">Credit card number required</span>
+          <span v-if="!$v.creditCard.numeric">Credit card number must consist of numbers</span>
+          <span v-if="!$v.creditCard.maxLength">Credit card number cannot consist of more than 19 digits</span>
         </div>
       </div>
       <div class="form-group">
@@ -96,7 +98,7 @@
 </template>
 
 <script>
-import {maxLength, minLength, required, email, sameAs} from "vuelidate/lib/validators";
+import {maxLength, minLength, required, email, sameAs, numeric} from "vuelidate/lib/validators";
 import {mapActions, mapGetters} from "vuex";
 import router from '../router';
 
@@ -190,7 +192,9 @@ export default {
       sameAsPassword: sameAs('password')
     },
     creditCard: {
-      required
+      required,
+      numeric,
+      maxLength: maxLength(19)
     }
   }
 }
