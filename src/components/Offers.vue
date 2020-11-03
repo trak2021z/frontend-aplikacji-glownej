@@ -246,7 +246,6 @@ export default {
         this.userStocks = this.userStocks.filter(function( obj ) {
             return obj.stock_amount > 0;
         })
-        console.log(this.userStocks)
 
         await this.getStocksAction();
         this.isComputing = true;
