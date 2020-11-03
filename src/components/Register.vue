@@ -15,7 +15,8 @@
                                   v-model.trim="$v.firstname.$model"
                                   :class="{'is-invalid':$v.firstname.$error, 'is-valid':!$v.firstname.$invalid }">
             <div class="invalid-feedback">
-              <span v-if="!$v.firstname.required">Firstname Required</span>
+              <span v-if="!$v.firstname.required">First name required</span>
+              <span v-else-if="!$v.firstname.lettersOnly">First name must consist of letters</span>
               <span v-if="!$v.firstname.minLength">First name too short</span>
               <span v-if="!$v.firstname.maxLength">First name too long</span>
             </div>
@@ -25,7 +26,8 @@
                    v-model.trim="$v.lastname.$model"
                    :class="{'is-invalid':$v.lastname.$error, 'is-valid':!$v.lastname.$invalid }">
             <div class="invalid-feedback">
-              <span v-if="!$v.lastname.required">Last name Required</span>
+              <span v-if="!$v.lastname.required">Last name required</span>
+              <span v-else-if="!$v.lastname.lettersOnly">Last name must consist of letters</span>
               <span v-if="!$v.lastname.minLength">Last name too short</span>
               <span v-if="!$v.lastname.maxLength">Last name too long</span>
             </div>
@@ -77,6 +79,8 @@
                :class="{'is-invalid':$v.creditCard.$error, 'is-valid':!$v.creditCard.$invalid }">
         <div class="invalid-feedback">
           <span v-if="!$v.creditCard.required">Credit card number required</span>
+          <span v-if="!$v.creditCard.numeric">Credit card number must consist of numbers</span>
+          <span v-if="!$v.creditCard.maxLength">Credit card number cannot consist of more than 19 digits</span>
         </div>
       </div>
       <div class="form-group">
@@ -94,9 +98,14 @@
 </template>
 
 <script>
-import {maxLength, minLength, required, email, sameAs} from "vuelidate/lib/validators";
+import {maxLength, minLength, required, email, sameAs, numeric} from "vuelidate/lib/validators";
 import {mapActions, mapGetters} from "vuex";
 import router from '../router';
+
+function lettersOnly(value){
+  if(/^[A-Za-zżźćńółęąśŻŹĆĄŚĘŁÓŃ\-' ]+$/.test(value)) return true; // Match with regex 
+  else return false;
+}
 
 export default {
   name: 'Register',
@@ -159,12 +168,14 @@ export default {
     firstname: {
       required,
       minLength: minLength(3),
-      maxLength: maxLength(50)
+      maxLength: maxLength(50),
+      lettersOnly
     },
     lastname: {
       required,
       minLength: minLength(3),
-      maxLength: maxLength(50)
+      maxLength: maxLength(50),
+      lettersOnly
     },
     email: {
       required,
@@ -181,7 +192,9 @@ export default {
       sameAsPassword: sameAs('password')
     },
     creditCard: {
-      required
+      required,
+      numeric,
+      maxLength: maxLength(19)
     }
   }
 }
