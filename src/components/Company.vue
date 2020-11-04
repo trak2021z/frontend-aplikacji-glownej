@@ -100,6 +100,7 @@ export default {
     }catch(e){
       console.log(e);
     }
+    this.paginatorKey += 1;
     this.isComputing = false;
   }
 }
