@@ -48,7 +48,7 @@
           </table>
         </div>
         <hr>
-        <jw-pagination :items="getTransactions" :maxPages="4" :labels="customLabels" @changePage="onChangePage"/>
+        <paginator :items="getTransactions" :maxPages="4" @changePage="onChangePage"/>
       </template>
     </div>
   </div>
@@ -56,8 +56,10 @@
 
 <script>
 import {mapGetters, mapActions} from "vuex";
+import Paginator from "@/components/Paginator";
 
 export default {
+  components: {Paginator},
   data() {
     return {
       isComputing: false,
