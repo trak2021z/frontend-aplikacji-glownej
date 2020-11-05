@@ -38,7 +38,6 @@
         <paginator :items="allUserStocks"
                    :maxPages="4"
                    :initialPage="currentPage"
-                   :labels="customLabels"
                    :key="paginatorKey"
                    @changePage="onChangePage"
         />
@@ -84,7 +83,7 @@ export default {
       this.pageOfUserStocks = pageOfItems;
     }
   },
-  computed: mapGetters(["getUser", "allUserStocks", 'customLabels']),
+  computed: mapGetters(["getUser", "allUserStocks"]),
   async created() {
     this.isComputing = true;
     this.user = await this.getUserAction();

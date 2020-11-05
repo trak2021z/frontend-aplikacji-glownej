@@ -22,10 +22,10 @@
 import paginate from 'jw-paginate';
 
 const defaultLabels = {
-  first: 'First',
-  last: 'Last',
-  previous: 'Previous',
-  next: 'Next'
+  first: '<<',
+  last: '>>',
+  previous: '<',
+  next: '>'
 };
 
 const defaultStyles = {

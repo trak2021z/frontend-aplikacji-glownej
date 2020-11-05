@@ -38,7 +38,6 @@
         <paginator :items="allStocks"
                    :maxPages="4"
                    :initialPage="currentPage"
-                   :labels="customLabels"
                    :key="paginatorKey"
                    @changePage="onChangePage"
         />
@@ -56,7 +55,7 @@ import Paginator from "@/components/Paginator";
 
 export default {
   name: "Stocks",
-  computed: mapGetters(['allStocks', 'customLabels']),
+  computed: mapGetters(['allStocks']),
   components: {Paginator, BuySellModal, StockRow},
   data(){
     return{

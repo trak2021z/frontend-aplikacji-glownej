@@ -91,7 +91,6 @@
       <paginator :items="getOffers"
                   :maxPages="4"
                   :initialPage="currentPage"
-                  :labels="customLabels"
                   :key="paginatorKey"
                   @changePage="onChangePage"/>
       </template>
@@ -114,7 +113,7 @@ function available_amount(value){
 
 export default {
     computed: { 
-      ...mapGetters(['customLabels', 'getOffers', 'getUser', 'allStocks', 'allUserStocks']),
+      ...mapGetters(['getOffers', 'getUser', 'allStocks', 'allUserStocks']),
     },
     components: {Paginator},
     data() {

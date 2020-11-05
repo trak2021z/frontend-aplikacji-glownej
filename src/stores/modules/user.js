@@ -2,13 +2,7 @@ import axios from 'axios';
 import authHeader from "@/stores/modules/auth-header";
 
 const state = {
-    user: null,
-    labels: {
-        first: '<<',
-        last: '>>',
-        previous: '<',
-        next: '>'
-    }
+    user: null
 }
 
 const actions = {
@@ -24,11 +18,7 @@ const actions = {
 const getters = {
     getUser: state => {
         return state.user;
-    },
-    customLabels: state => {
-        return state.labels;
     }
-
 }
 
 const mutations = {

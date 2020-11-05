@@ -38,7 +38,6 @@
         <paginator :items="companyStocks"
                    :maxPages="4"
                    :initialPage="currentPage"
-                   :labels="customLabels"
                    :key="paginatorKey"
                    @changePage="onChangePage"
         />
@@ -85,7 +84,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(["getCompany", "customLabels"]),
+    ...mapGetters(["getCompany"]),
     companyStocks: function (){
         return this.getCompany.stocks;
     }

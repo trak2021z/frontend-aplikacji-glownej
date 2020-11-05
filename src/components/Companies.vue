@@ -34,7 +34,6 @@
         <paginator :items="allCompanies"
                    :maxPages="4"
                    :initialPage="currentPage"
-                   :labels="customLabels"
                    :key="paginatorKey"
                    @changePage="onChangePage"
         />
@@ -51,7 +50,7 @@ import Paginator from "@/components/Paginator";
 export default {
   name: "Companies",
   components: {Paginator},
-  computed: mapGetters(['allCompanies', 'customLabels']),
+  computed: mapGetters(['allCompanies']),
   data() {
     return {
       isComputing: false,
