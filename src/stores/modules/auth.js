@@ -9,10 +9,10 @@ const actions = {
         return axios.post( 'rest-auth/registration/', user)
             .then(response => {
                 commit('setToken', response.data.token)
-                return response.status
+                return response
             })
             .catch(error => {
-                return error.response.status
+                return (error.response)
             });
     },
     async login({commit}, user) {
