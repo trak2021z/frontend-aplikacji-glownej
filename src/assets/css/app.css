@@ -14,3 +14,7 @@ body {
     color: #000;
     background: #9fd98f;
 }
+
+.bootstrap-select:not([class*=col-]):not([class*=form-control]):not(.input-group-btn) {
+    width: auto;
+}

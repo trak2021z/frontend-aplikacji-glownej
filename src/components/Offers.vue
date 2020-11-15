@@ -11,6 +11,10 @@
                 <option value="2">Sell Offer</option>
               </select>
             </div>
+          </div>
+        </div>
+        <div class="form-group">
+          <div class="row">
             <div class="col">
                 <select name="sel_stocks" reactive="true" v-model="selectedStock" @change="onChangeStock" v-if="selectedOfferType == 1" class="browser-default custom-select">
                 <option selected disabled value>Please choose stock</option>
