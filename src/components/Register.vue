@@ -159,7 +159,7 @@
             <input
               @click="clearFormFields"
               type="reset"
-              class="btn btn-success btn-lg btn-block"
+              class="btn btn-primary btn-lg btn-block"
               value="Reset Form"
             />
           </div>
@@ -167,15 +167,15 @@
             <input
               @click="submit"
               type="button"
-              class="btn btn-success btn-lg btn-block"
+              class="btn btn-primary btn-lg btn-block"
               value="Register"
             />
           </div>
         </div>
       </div>
     </form>
-    <div class="text-center">
-      Already have an account? <router-link to="/login">Sign in</router-link>
+    <div class="text-center text-white">
+      Already have an account? <router-link to="/login" class="text-white">Sign in</router-link>
     </div>
   </div>
 </template>

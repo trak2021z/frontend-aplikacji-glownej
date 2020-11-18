@@ -1,8 +1,8 @@
 <template>
-  <div id="app">
-    <navbar></navbar>
-    <router-view></router-view>
-  </div>
+    <div id="app">
+      <navbar></navbar>
+      <router-view></router-view>
+    </div>
 </template>
 
 <script>
