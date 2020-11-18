@@ -1,45 +1,51 @@
 <template>
+  <div class="background-stonks">
   <div class="main-form">
-    <form @submit="submit">
-      <h2>Log in</h2>
-      <p class="hint-text">Please log in using e-mail and password</p>
-      <div class="form-group">
-        <div v-if="(status && status !== 201) || (!status && loginMessage)" class="alert alert-danger">
-          {{loginMessage}}
-        </div>
-        <div class="row">
-          <div class="col"><input type="email" class="form-control" name="email" placeholder="Email"
-                                  v-model.trim="$v.email.$model"
-                                  :class="{'is-invalid':$v.email.$error, 'is-valid':!$v.email.$invalid }">
-            <div class="invalid-feedback">
-              <span v-if="!$v.email.required">Email required</span>
-              <span v-if="!$v.email.email">Wrong email format</span>
+      <div class="col-sm-6 float-right">
+        <form @submit="submit">
+          <h2>Log in</h2>
+          <p class="hint-text">Plaes log in using e-mail and password</p>
+          <div class="form-group">
+            <div v-if="(status && status !== 201) || (!status && loginMessage)" class="alert alert-danger">
+              {{loginMessage}}
+            </div>
+            <div class="row">
+              <div class="col"><input type="email" class="form-control" name="email" placeholder="Email"
+                                      v-model.trim="$v.email.$model"
+                                      :class="{'is-invalid':$v.email.$error, 'is-valid':!$v.email.$invalid }">
+                <div class="invalid-feedback">
+                  <span v-if="!$v.email.required">Email required</span>
+                  <span v-if="!$v.email.email">Wrong email format</span>
+                </div>
+              </div>
             </div>
           </div>
-        </div>
-      </div>
-      <div class="form-group">
-        <div class="row">
-          <div class="col"><input type="password" class="form-control" name="password" placeholder="Password"
-                                  v-model.trim="$v.password.$model"
-                                  :class="{'is-invalid':$v.password.$error, 'is-valid':!$v.password.$invalid }">
-            <div class="invalid-feedback">
-              <span v-if="!$v.password.required">Password required</span>
-              <span v-if="!$v.password.minLength">Password must be at least 8 characters long</span>
+          <div class="form-group">
+            <div class="row">
+              <div class="col"><input type="password" class="form-control" name="password" placeholder="Password"
+                                      v-model.trim="$v.password.$model"
+                                      :class="{'is-invalid':$v.password.$error, 'is-valid':!$v.password.$invalid }">
+                <div class="invalid-feedback">
+                  <span v-if="!$v.password.required">Password required</span>
+                  <span v-if="!$v.password.minLength">Password must be at least 8 characters long</span>
+                </div>
+              </div>
             </div>
           </div>
-        </div>
-      </div>
-      <div class="form-group">
-        <div class="row">
-          <div class="col">
-            <button type="submit" class="btn btn-success btn-lg btn-block">Log in</button>
+          <div class="form-group">
+            <div class="row">
+              <div class="col">
+                <button type="submit" class="btn btn-primary btn-lg btn-block">Log in</button>
+              </div>
+            </div>
           </div>
-        </div>
+        </form>
+        <div class="text-center text-white">Don't have an account? <router-link class="text-white" to="/register">Register</router-link></div>
+        <div class="bg-white mt-4 mb-1 rounded-pill blur"></div>
+        <h1 class="text-white mt-5 stonks-text">STONKS</h1>
       </div>
-    </form>
-    <div class="text-center">Don't have an account? <router-link to="/register">Register</router-link></div>
   </div>
+    </div>
 </template>
 
 <script>

@@ -30,14 +30,14 @@
           <ul class="navbar-nav ml-auto">
             <template v-if="!$store.getters.isAuthenticated">
               <li :class="{'nav-item':this.currentPage !== 'login', 'nav-item active':this.currentPage === 'login' }">
-                <router-link class="nav-link" to="/login">Log in</router-link>
+                <router-link class="nav-link" to="/login" data-toggle="collapse" data-target=".navbar-collapse.show">Log in</router-link>
               </li>
               <li class="nav-item">
-                <router-link class="btn btn-success" to="/register">Register</router-link>
+                <router-link class="btn btn-primary" to="/register" data-toggle="collapse" data-target=".navbar-collapse.show">Register</router-link>
               </li>
             </template>
             <li v-else @click="logout" class="nav-item">
-              <router-link class="btn btn-success" to="">Logout</router-link>
+              <router-link class="btn btn-primary" to="" data-toggle="collapse" data-target=".navbar-collapse.show">Logout</router-link>
             </li>
           </ul>
         </div>

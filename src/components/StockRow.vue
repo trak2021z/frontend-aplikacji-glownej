@@ -7,7 +7,7 @@
     <td>{{ isUserStock ? stockRow.owned_amount : stockRow.avail_amount }}</td>
     <td>{{ stockRow.price }}</td>
     <td>
-      <button v-on:click="onClick(false)" class="btn-success">Buy</button>
+      <button v-on:click="onClick(false)" class="btn-primary">Buy</button>
       <button v-if="isUserStock" v-on:click="onClick(true)" class="btn-danger">Sell</button>
     </td>
   </tr>

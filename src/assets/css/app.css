@@ -12,9 +12,51 @@
 
 body {
     color: #000;
-    background: #9fd98f;
 }
 
 .bootstrap-select:not([class*=col-]):not([class*=form-control]):not(.input-group-btn) {
     width: auto;
 }
+
+body:before {
+    content: '';
+    position: fixed;
+    width: 100vw;
+    height: 100vh;
+    background: url('../../assets/stonks.jpg'); /*no-repeat center center fixed;*/
+    background-repeat: no-repeat;
+    background-position: 100% 100%;
+    background-size: cover;
+    filter: blur(20px);
+    z-index: -9;
+    transform: scale(1.1);
+}
+
+.background-stonks {
+    background: url('../../assets/stonks-guy.png') no-repeat;
+    background-clip: border-box;
+    background-position: 50% bottom;
+    background-origin: border-box;
+    background-size: 670px 498px;
+    height: 540px;
+}
+
+.stonks-text {
+    position: absolute;
+    text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+    left: 0;
+    right: 0;
+}
+
+.blur {
+    position: absolute;
+    width: 300px;
+    height: 100px;
+    filter: blur(15px);
+    z-index: 0;
+    left: 0;
+    right: 0;
+    margin-left: auto;
+    margin-right: auto;
+}
+

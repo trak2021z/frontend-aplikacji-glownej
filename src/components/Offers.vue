@@ -52,7 +52,7 @@
               </div>
           </div><br>
           <div class="row">
-            <input @click="submit" type="button" class="btn btn-success btn-lg btn-block" value="Create Offer"/>
+            <input @click="submit" type="button" class="btn btn-primary btn-lg btn-block" value="Create Offer"/>
           </div>
         </div>
       </form>

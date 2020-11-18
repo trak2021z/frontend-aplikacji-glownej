@@ -47,7 +47,7 @@
 
         </div>
         <div class="modal-footer d-flex justify-content-center">
-          <button @click="performTransaction" class="btn btn-success">{{ isSell ? "Sell" : "Buy" }}</button>
+          <button @click="performTransaction" class="btn btn-primary">{{ isSell ? "Sell" : "Buy" }}</button>
           <button @click="hide" class="btn btn-warning">Cancel</button>
         </div>
       </div>
