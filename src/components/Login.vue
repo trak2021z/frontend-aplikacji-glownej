@@ -1,13 +1,14 @@
 <template>
   <div class="background-stonks">
-  <div class="main-form">
+    <div class="main-form">
       <div class="col-sm-6 float-right">
         <form @submit="submit">
           <h2>Log in</h2>
-          <p class="hint-text">Plaes log in using e-mail and password</p>
+          <p class="hint-text">Please log in using e-mail and password</p>
           <div class="form-group">
-            <div v-if="(status && status !== 201) || (!status && loginMessage)" class="alert alert-danger">
-              {{loginMessage}}
+            <div v-if="(status && status !== 201 && loginMessage) || (!status && loginMessage)" class="alert"
+                 v-bind:class="{ 'alert-danger': this.loginAlertDangerClass, 'alert-success': !this.loginAlertDangerClass }">
+              {{ loginMessage }}
             </div>
             <div class="row">
               <div class="col"><input type="email" class="form-control" name="email" placeholder="Email"
@@ -40,12 +41,14 @@
             </div>
           </div>
         </form>
-        <div class="text-center text-white">Don't have an account? <router-link class="text-white" to="/register">Register</router-link></div>
+        <div class="text-center text-white">Don't have an account?
+          <router-link class="text-white" to="/register">Register</router-link>
+        </div>
         <div class="bg-white mt-4 mb-1 rounded-pill blur"></div>
         <h1 class="text-white mt-5 stonks-text">STONKS</h1>
       </div>
-  </div>
     </div>
+  </div>
 </template>
 
 <script>
@@ -55,6 +58,7 @@ import router from "@/router";
 
 export default {
   name: "Login",
+  loginAlertDangerClass: true,
   data() {
     return {
       email: '',
@@ -69,6 +73,7 @@ export default {
     submit(e) {
       this.$v.$touch();
       if (this.$v.$invalid) {
+        this.loginAlertDangerClass = true;
         this.loginMessage = 'Fill all fields correctly to log in';
         this.$v.$reset();
       } else {
@@ -79,19 +84,22 @@ export default {
         }).then(response => {
           this.status = response;
           this.loginStatus();
-          if(this.status === 200){
+          if (this.status === 200) {
             this.$v.$reset();
-            router.replace('/stocks');
+            router.replace("/bonjur");
           }
         });
       }
       e.preventDefault();
     },
-    loginStatus(){
-      if(this.status === 200)
-        this.loginMessage = "Log in successful, we'll redirect you in a moment";
-      else
+    loginStatus() {
+      if (this.status === 200) {
+        //this.loginAlertDangerClass = false;
+        //this.loginMessage = "Log in successful, we'll redirect you in a moment";
+      } else {
+        this.loginAlertDangerClass = true;
         this.loginMessage = 'Log in failed - wrong email and/or password';
+      }
     }
   },
   validations: {

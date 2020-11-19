@@ -41,6 +41,20 @@ body:before {
     height: 540px;
 }
 
+.background-bonjur {
+    content: '';
+    position: fixed;
+    width: 100vw;
+    height: 100vh;
+    background: url('../../assets/bonjur_background.png'); /*no-repeat center center fixed;*/
+    background-repeat: no-repeat;
+    background-position: 100% 100%;
+    background-size: cover;
+    filter: blur(20px);
+    z-index: -9;
+    transform: scale(1.1);
+}
+
 .stonks-text {
     position: absolute;
     text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;

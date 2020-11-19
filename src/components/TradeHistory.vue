@@ -81,8 +81,7 @@ export default {
   async created() {
     this.isComputing = true;
     await this.getTransactionsAction();
-    this.getTransactions.forEach(this.formatDate)
-    this.getTransactions.reverse();
+    this.getTransactions.forEach(this.formatDate);
     this.isComputing = false;
   }
 }
