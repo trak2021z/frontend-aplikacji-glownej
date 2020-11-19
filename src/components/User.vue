@@ -96,6 +96,12 @@ export default {
       console.log(e);
     }
     this.isComputing = false;
+  },
+  watch: {
+    isComputing: async function () {
+      await this.getUserStocksAction();
+      this.onChangePage(this.allUserStocks, 1);
+    },
   }
 }
 </script>
