@@ -63,7 +63,7 @@ export default {
     logout() {
       store.dispatch('clearToken');
       localStorage.removeItem('token');
-      router.replace('/')
+      router.replace('/adios')
     }
   },
   watch: {

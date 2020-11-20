@@ -10,6 +10,7 @@ import store from './stores/store';
 import TradeHistory from "@/components/TradeHistory";
 import Offers from "@/components/Offers";
 import Bonjur from "@/components/Bonjur";
+import Adios from "@/components/Adios";
 
 Vue.use(Router);
 
@@ -91,6 +92,12 @@ const router = new Router({
             name: 'bonjur',
             component: Bonjur,
             beforeEnter: ifAuthenticated
+        },
+        {
+            path: '/adios',
+            name: 'adios',
+            component: Adios,
+            beforeEnter: ifNotAuthenticated
         },
         {
             path: '*',
