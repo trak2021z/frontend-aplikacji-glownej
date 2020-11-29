@@ -6,7 +6,7 @@
         <div class="form-group">
           <div class="row">
             <div class="col">
-              <select name="sel_offer_type" v-model="selectedOfferType" @change="onChange" class="browser-default custom-select">
+              <select name="sel_offer_type" v-model="selectedOfferType" @change="onChangeType" class="browser-default custom-select">
                 <option value="1">Buy Offer</option>
                 <option value="2">Sell Offer</option>
               </select>
@@ -20,10 +20,15 @@
                 <option selected disabled value>Please choose stock</option>
                 <option v-for="(item, index) in allStocks" v-bind:value="index" :key="item.id"> {{item.name}} - {{item.price}} </option>
               </select>
-              <select name="sel_stocks" reactive="true" v-model="selectedStock" @change="onChangeStock" v-if="selectedOfferType == 2" class="browser-default custom-select">
-                <option selected disabled value>Please choose stock</option>
-                <option v-for="item in userStocks" :key="item.id"> {{item.stock.name}}</option>
-              </select>
+              <template v-if="selectedOfferType == 2">
+                <select name="sel_stocks" reactive="true" v-if="this.userStocks != null" v-model="selectedStock" @change="onChangeStock" class="browser-default custom-select">
+                  <option selected disabled value>Please choose stock</option>
+                  <option v-for="item in userStocks" :key="item.id"> {{item.stock.name}}</option>
+                </select>
+                <select name="sel_stocks" reactive="true" v-if="this.userStocks == null" v-model="selectedStock" @change="onChangeStock" class="browser-default custom-select">
+                  <option selected disabled value>You don't have any stocks.</option>
+                </select>
+              </template>
             </div>
           </div><br>
           <div class="row">
@@ -82,8 +87,8 @@
           <td>{{ item.created }}</td>
           <td>{{ item.offer_type }}</td>
           <td>{{ item.status_name }}</td>
-          <td v-if="item.offer_type === 'buy'">{{ allStocks.find( element => (element.pk === item.stock) ).name }}</td>
-          <td v-else>{{ allUserStocks.find( element => (element.pk === item.stock)).stock.name  }} </td>
+          <td v-if="allStocks != null && item.offer_type === 'buy'">{{ allStocks.find( element => (element.pk === item.stock) ).name }}</td>
+          <td v-else-if="allUserStocks != null">{{ allUserStocks.find( element => (element.pk === item.stock)).stock.name  }} </td>
           <td>{{ item.unit_price }}</td>
           <td>{{ item.stock_amount }}</td>
           <td><button v-if="item.status === 1" v-on:click="clickCancelOffer(item.pk, item.offer_type)" class="btn-danger">Cancel</button></td>
@@ -109,9 +114,11 @@ import Paginator from "@/components/Paginator";
 
 function available_amount(value){
   if(this.selectedOfferType == 1){
+    if(this.allStocks == null || this.allStocks[this.selectedStock] == null) return 0;
     return value <= this.allStocks[this.selectedStock].avail_amount;
   }else{
-    return value <= this.userStocks[this.selectedStock].stock_amount;
+    if(this.userStocks == null || this.userStocks[this.selectedStock] == null) return 0;
+    else return value <= this.userStocks[this.selectedStock].stock_amount;
   }
 }
 
@@ -135,7 +142,9 @@ export default {
   },
   methods: {
     ...mapActions(["getOffersAction", "addBuyOfferAction", "addSellOfferAction", "deleteBuyOfferAction", "deleteSellOfferAction","getUserAction", "getUserStocksAction", "getStocksAction"]),
-    onChange(){
+    onChange(){},
+    onChangeType(){
+      this.selectedStock = 0;
       //console.log('Offer type selected: ', this.selectedOfferType);
     },
     onChangeStock(){
@@ -246,10 +255,12 @@ export default {
         //this.user = await this.getUserAction();
         await this.getUserStocksAction();
         this.userStocks = this.allUserStocks;
-        this.userStocks = this.userStocks.filter(function( obj ) {
+        if(this.userStocks != null){
+          this.userStocks = this.userStocks.filter(function( obj ) {
             return obj.stock_amount > 0;
-        })
-
+          }) 
+        }
+        
         await this.getStocksAction();
         this.isComputing = true;
         await this.getOffersAction();
