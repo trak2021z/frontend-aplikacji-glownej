@@ -16,8 +16,8 @@ const actions = {
         commit('setSellOffers', response.data.sell_offers);
 
         let offers_all = response.data.buy_offers;
-        if(response.data.sell_offers != null && response.data.sell_offers){
-            offers_all.concat( response.data.sell_offers);
+        if(response.data.sell_offers != null && response.data.sell_offers.length > 0){
+            offers_all = offers_all.concat( response.data.sell_offers);
             offers_all.forEach(function setType(item) {
                 if(item.stock) item.offer_type = 'buy';
                 else {
@@ -32,7 +32,6 @@ const actions = {
         this.dispatch('getUserAction');
         this.dispatch('getUserStocksAction');
         commit('setOffers', offers_all);
-
         return response.data;
     },
     //POST
