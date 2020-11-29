@@ -99,7 +99,8 @@
       </table>
       </div>
       <hr>
-      <paginator :items="getOffers"
+      <paginator :items="getOffers.filter(item => item.offer_type === 'buy' || 
+        (this.allUserStocks != null && this.allUserStocks.find( element => (element.pk === item.stock)) != null) )"
                   :maxPages="4"
                   :initialPage="currentPage"
                   :key="paginatorKey"
