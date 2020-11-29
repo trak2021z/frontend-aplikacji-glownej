@@ -138,7 +138,6 @@ export default {
       selectedOfferType : 1,
       selectedStock: 1,
       userStocks: null,
-      userStocksNoFilter: null,
       edt_unit_price: null,
       edt_amount: null
     }
