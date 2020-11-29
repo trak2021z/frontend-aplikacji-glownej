@@ -88,7 +88,9 @@
           <td>{{ item.offer_type }}</td>
           <td>{{ item.status_name }}</td>
           <td v-if="allStocks != null && item.offer_type === 'buy'">{{ allStocks.find( element => (element.pk === item.stock) ).name }}</td>
-          <td v-else-if="allUserStocks != null">{{ allUserStocks.find( element => (element.pk === item.stock)).stock.name  }} </td>
+          <td v-else-if="allUserStocks != null && allUserStocks.find( element => (element.pk === item.stock)) != null ">
+            {{ allUserStocks.find( element => (element.pk === item.stock)).stock.name  }} </td>
+          <td v-else> {{ "userStock #" + item.user_stock }}</td>
           <td>{{ item.unit_price }}</td>
           <td>{{ item.stock_amount }}</td>
           <td><button v-if="item.status === 1" v-on:click="clickCancelOffer(item.pk, item.offer_type)" class="btn-danger">Cancel</button></td>
@@ -136,6 +138,7 @@ export default {
       selectedOfferType : 1,
       selectedStock: 1,
       userStocks: null,
+      userStocksNoFilter: null,
       edt_unit_price: null,
       edt_amount: null
     }
